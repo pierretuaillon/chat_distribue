@@ -4,11 +4,15 @@ import java.util.ArrayList;
 
 import pair.client;
 
-public class annuaire {
+/**
+ * Refere a l’adresse IP/port d’un pair toujours connecte
+ *
+ */
+public class Annuaire {
 
 	ArrayList<client> listeClient = new ArrayList<client>();
 	
-	public annuaire(){
+	public Annuaire() {
 		
 	}
 	
