@@ -5,22 +5,24 @@ public class ChordPeer {
 	/**
 	 * Determine la place sur l'anneau
 	 * Peut etre : fonction de hachage sur l’IP du pair ou l’identifiant de l’utilisateur
-	 * ou encore aléatoire
+	 * ou encore aleatoire
 	 */
-	private int key;
+	private String key;
 	/**
 	 * Paire successeur dans l'anneau principal 
 	 * A maintenir
 	 */
-	//TODO ou une ArrayList ?
 	private ChordPeer successeur;
 	/**
 	 * Paire predecesseur dans l'anneau principal 
 	 * A maintenir
 	 */
-	//TODO ou une ArrayList ?
 	private ChordPeer predecesseur;
 	
+	public ChordPeer(String key) {
+		this.key = key;
+	}
+
 	/**
 	 * Retourne l'emplacement de key dans l’anneau
 	 * @param key du pair souhaitant rejoindre l’anneau
@@ -32,7 +34,7 @@ public class ChordPeer {
 	
 	/**
 	 * Permet au paire courant de s'inserer
-	 * Initialisation des references distantes(predecesseur et successeur)
+	 * Initialisation des references distantes (predecesseur et successeur)
 	 */
 	public void joinMainChord() {
 		
