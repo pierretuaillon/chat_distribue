@@ -24,6 +24,8 @@ public class ChordPeer {
 	
 	public ChordPeer(long key) {
 		this.key = key;
+		this.predecesseur = null;
+		this.successeur = this;
 	}
 	
 	/**
@@ -81,17 +83,14 @@ public class ChordPeer {
 	}
 	
 	/**
-	 * Permet a un autre pair de s'inserer a sa place
+	 * Permet de s'inserer par le biais d'un pair connu qui se trouve dans le reseau (handleChordPeer)
 	 * Initialisation des references distantes (predecesseur et successeur)
 	 */
-	public void joinMainChord(ChordPeer nouveauChordPeer) {
+	public void joinMainChord(ChordPeer handleChordPeer) {
 		
-		/*Ainsi, si son identifiant est myID il devra s’inserer juste avant le pair S=handle.findkey(myID)
-		, on devra alors mettre à jour les objets S,S.pred
-		 ainsi que les informations du nouveau pair N
-		.*/
-		//TODO
-		this.successeur = nouveauChordPeer.findkey(this.getKey());
+		this.successeur = handleChordPeer.findkey(this.getKey());
+		this.successeur.setPredecesseur(this);
+		//TODO autres ?
 		
 	}
 	
@@ -111,6 +110,19 @@ public class ChordPeer {
 	public void forwardMessage(String data) {
 		
 	}
+	
+	public long getKey() {
+		return key;
+	}
+	
+	
+	public void setSuccesseur(ChordPeer successeur) {
+		this.successeur = successeur;
+	}
+
+	public void setPredecesseur(ChordPeer predecesseur) {
+		this.predecesseur = predecesseur;
+	}
 
 	@Override
 	public String toString() {
@@ -118,9 +130,4 @@ public class ChordPeer {
 				+ ", predecesseur=" + predecesseur + "]";
 	}
 
-	public long getKey() {
-		return key;
-	}
-
-	
 }
