@@ -32,14 +32,27 @@ public class ChordPeer {
 	 * @return
 	 */
 	public ChordPeer findkey(long key) {
+		// Cas pair unique
+		if (this == this.successeur && this == this.predecesseur) {
+			return this;
+		}
+		
+		// Cas intervalles circulaires
+		if (this.predecesseur.getKey() > this.key) {
+			
+			// Si on considere qu'on va jusqu'a 100 cles, a voir
+			if (this.predecesseur.getKey() <= key && key <= 100 || key >= 0 && key <= this.key) {
+				return this;
+			}
+		}
+		
+		// Cas non circulaire ou je suis responsable
 		if (key > this.predecesseur.getKey() && key <= this.key) {
 			return this;
 		}
-		return this.successeur.findkey(key);
 		
-		//TODO 
-		// On fera attention au fait que les intervales sont circulaires et au cas particulier 
-		// d’un pair unique (cas où:math:succ=pred=this).
+		// Sinon je me refere a mon successeur
+		return this.successeur.findkey(key);
 	}
 	
 	/** 
