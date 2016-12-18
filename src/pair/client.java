@@ -3,7 +3,7 @@ package pair;
 import java.net.InetAddress;
 
 public class client {
-	int key;	
+	long key;	
 	InetAddress adr;
 	int port;
 		
@@ -14,11 +14,14 @@ public class client {
 	 * @param port
 	 */
 	public client (int key, InetAddress adressClient, int port){
-		this.key = key;
+		this.key = genererKey(adressClient);
 		this.adr = adressClient;
 		this.port = port;
 	}
 
+	private long genererKey(InetAddress adressClient){
+		return adressClient.hashCode();
+	}
 	
 	/*public client getPairResponsable(){
 		
@@ -35,7 +38,7 @@ public class client {
 		return this;
 	}
 
-	public int getKey() {
+	public long getKey() {
 		return key;
 	}
 
