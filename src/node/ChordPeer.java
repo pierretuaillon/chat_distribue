@@ -2,6 +2,8 @@ package node;
 
 import java.util.ArrayList;
 
+import pair.Client;
+
 public class ChordPeer {
 	
 	/**
@@ -9,6 +11,7 @@ public class ChordPeer {
 	 */
 	private ArrayList<SalonConversation> salons = new ArrayList<SalonConversation>();
 	private ArrayList<byte[]> chainesStockees = new ArrayList<byte[]>();
+	private Client client;
 	
 	/**
 	 * Determine la place sur l'anneau
@@ -77,56 +80,37 @@ public class ChordPeer {
 	public void setItem(long key) {
 		
 	}
-
-	/**
-	 * Retourne l'emplacement de key dans l’anneau
-	 * @param key du pair souhaitant rejoindre l’anneau
-	 * @return int
-	 */
-	public int dindMainChord(long key)  {
-		return 0;
-	}
-	
-	/**
-	 * Permet de s'inserer par le biais d'un pair connu qui se trouve dans le reseau (handleChordPeer)
-	 * Initialisation des references distantes (predecesseur et successeur)
-	 */
-	public void joinMainChord(ChordPeer handleChordPeer) {
-		
-		this.successeur = handleChordPeer.findkey(this.getKey());
-		this.successeur.setPredecesseur(this);
-		//TODO autres ?
-		
-	}
-	
-	/**
-	 * Met à jour les liens de l’anneau virtuel 
-	 * i,e notre predecesseur devra des lors pointer sur notre successeur
-	 */
-	public void leaveMainChord(ChordPeer ancienChordPeer) {
-		
-	}
-	
-	/**
-	 * Faire circuler un message vers son/ses sucesseurs
-	 * On veillera a ne pas transmettre le meme message deux fois
-	 * @param data message a faire circuler
-	 */
-	public void forwardMessage(String data) {
-		
-	}
 	
 	public long getKey() {
 		return key;
 	}
 	
-	
+	public ArrayList<SalonConversation> getSalons() {
+		return salons;
+	}
+
 	public void setSuccesseur(ChordPeer successeur) {
 		this.successeur = successeur;
 	}
 
 	public void setPredecesseur(ChordPeer predecesseur) {
 		this.predecesseur = predecesseur;
+	}
+	
+	public ChordPeer getPredecesseur() {
+		return this.predecesseur;
+	}
+	
+	public ChordPeer getSuccesseur() {
+		return this.successeur;
+	}
+
+	public ArrayList<byte[]> getChainesStockees() {
+		return chainesStockees;
+	}
+
+	public Client getClient() {
+		return client;
 	}
 
 	@Override
