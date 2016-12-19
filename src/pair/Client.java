@@ -1,22 +1,31 @@
 package pair;
 
 import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-public class client {
+public class Client implements Runnable {
+	
 	long key;	
 	InetAddress adr;
 	int port;
+	Socket socket;
+	ServerSocket serverSocket;
 		
 	/**
-	 * Un client est défini par sa key, son adress et son port	
+	 * Un client est dï¿½fini par sa key, son adress et son port	
 	 * @param key
 	 * @param adressClient
 	 * @param port
 	 */
-	public client (int key, InetAddress adressClient, int port){
+	public Client (int key, InetAddress adressClient, int port){
 		this.key = genererKey(adressClient);
 		this.adr = adressClient;
 		this.port = port;
+	}
+	
+	public static void main(String[] args) {
+		
 	}
 
 	private long genererKey(InetAddress adressClient){
@@ -34,7 +43,7 @@ public class client {
 		return "client [id=" + this.key + ", adr=" + this.adr + ", port=" + this.port + "]";
 	}
 
-	public client getClient(){
+	public Client getClient(){
 		return this;
 	}
 
@@ -50,6 +59,12 @@ public class client {
 
 	public int getPort() {
 		return port;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

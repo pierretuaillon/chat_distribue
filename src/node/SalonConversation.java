@@ -4,6 +4,12 @@ import java.util.ArrayList;
 
 public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a voir
 	
+	/**
+	 * Chaque pair appartient a un ensemble eventuellement vide de salons de conversation
+	 * Autre sens de la fleche
+	 */
+	private ArrayList<ChordPeer> pairsPossedes = new ArrayList<ChordPeer>();
+	
 	/** 
 	 * Renvoie la liste des identifiants des salles de chat
 	 * @return ArrayList<Long>

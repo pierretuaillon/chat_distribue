@@ -4,7 +4,12 @@ import java.util.ArrayList;
 
 public class ChordPeer {
 	
+	/**
+	 * Chaque pair appartient a un ensemble eventuellement vide de salons de conversation
+	 */
+	private ArrayList<SalonConversation> salons = new ArrayList<SalonConversation>();
 	private ArrayList<byte[]> chainesStockees = new ArrayList<byte[]>();
+	
 	/**
 	 * Determine la place sur l'anneau
 	 * Peut etre : fonction de hachage sur l’IP du pair ou l’identifiant de l’utilisateur

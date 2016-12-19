@@ -2,7 +2,7 @@ package p2p;
 
 import java.util.ArrayList;
 
-import pair.client;
+import pair.Client;
 
 /**
  * Refere a l’adresse IP/port d’un pair toujours connecte
@@ -10,7 +10,7 @@ import pair.client;
  */
 public class Annuaire {
 
-	ArrayList<client> listeClient = new ArrayList<client>();
+	ArrayList<Client> listeClient = new ArrayList<Client>();
 	
 	public Annuaire() {
 		
