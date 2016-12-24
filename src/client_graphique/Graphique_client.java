@@ -1,5 +1,6 @@
-package pair;
+package client_graphique;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -31,10 +32,7 @@ public class Graphique_client extends JPanel implements ActionListener {
         textArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(textArea);
 
-        textArea_Pseudo = new JTextArea(5, 70);
-        textArea_Pseudo.setEditable(false);
-        textArea_Pseudo.append("Votre pseudo : Truc" );
-        
+                
         //Ajout des composant au panel.
         GridBagConstraints c = new GridBagConstraints();
         c.gridwidth = GridBagConstraints.REMAINDER;
@@ -46,6 +44,8 @@ public class Graphique_client extends JPanel implements ActionListener {
         c.fill = GridBagConstraints.HORIZONTAL;
         add(textField, c);
     }
+    
+    
 
     public void actionPerformed(ActionEvent evt) {
         String text = textField.getText();
@@ -66,10 +66,24 @@ public class Graphique_client extends JPanel implements ActionListener {
         //Création de la Frame
         JFrame frame = new JFrame("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+        frame.setLayout(new BorderLayout());
+        
         //Ajout des composant à la fenetre
-        frame.add(new Graphique_client());
-               
+        frame.add(new Graphique_client(), BorderLayout.LINE_START);
+        Pseudo_Graphique pseudo = new Pseudo_Graphique("Test");
+        JPanel pan = new JPanel();
+        pan.setLayout(new BorderLayout());
+        pan.add(pseudo.getTextArea_Pseudo(), BorderLayout.NORTH);  
+        
+        String [] listeSalons = {"salon 1", "salon 2", "salon 3", "salon 4", "salon 5"};
+        ComboBoxSalon cbs = new ComboBoxSalon(listeSalons);
+        pan.add(cbs.getListeSalon(), BorderLayout.CENTER);
+        
+        Description_Projet dp = new Description_Projet();
+        pan.add(dp.getDescritpion(), BorderLayout.SOUTH);
+        
+        frame.add(pan , BorderLayout.CENTER);
+        
         //affiche la fenetre
         frame.pack();
         frame.setVisible(true);
