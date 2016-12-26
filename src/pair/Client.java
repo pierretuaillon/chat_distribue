@@ -1,10 +1,9 @@
 package pair;
 
-import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
@@ -57,13 +56,15 @@ public class Client /*implements Runnable */{
 		if (handle == null) {
 			handle = this.chordPeer;
 		}
+		
 		this.joinMainChord(handle);
 		
 		Thread t = new Thread() {
 		    public void run() {
 		    	try {
+		    		System.out.println("Thread lancé");
 					execute();
-					System.out.println("socket lancé");
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -195,6 +196,32 @@ public class Client /*implements Runnable */{
 	
 	public void execute() throws IOException {
 
+		while(true) {
+	         try {
+	            System.out.println("Waiting for client on port " + 
+	               serverSocket.getLocalPort() + "...");
+	            this.socket = serverSocket.accept();
+	            
+	            System.out.println("Just connected to " + this.socket.getRemoteSocketAddress());
+	            DataInputStream in = new DataInputStream(this.socket.getInputStream());
+	            
+	            System.out.println(in.read());
+	            System.out.println("J ai recu : "  + in.readUTF());
+	            System.out.println("test23214585621456215");
+	            this.socket.close();
+	       
+	         }catch(SocketTimeoutException s) {
+	            System.out.println("Socket timed out!");
+	            break;
+	         }catch(IOException e) {
+	            e.printStackTrace();
+	            break;
+	         }
+	      }
+		
+		
+		
+		/*
 		while (true) {
 			System.out.println("[Serveur]:  waiting for connexion");
 			this.socket = this.serverSocket.accept();
@@ -210,6 +237,7 @@ public class Client /*implements Runnable */{
             String data = br.readLine();
             System.out.println("Message received from client is " + data);
 		}
+		*/
 	}
 	
 }
