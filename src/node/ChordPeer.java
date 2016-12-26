@@ -105,8 +105,10 @@ public class ChordPeer {
 
 	@Override
 	public String toString() {
-		return "ChordPeer [key=" + key + ", successeur=" + successeur
-				+ ", predecesseur=" + predecesseur + "]";
+		return "ChordPeer [client=" + client + ", key=" + key + ", successeur=" + successeur + ", predecesseur="
+				+ predecesseur + "]";
 	}
+
+
 
 }

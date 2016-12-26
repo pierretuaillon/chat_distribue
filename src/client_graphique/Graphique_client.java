@@ -100,33 +100,23 @@ public class Graphique_client extends JPanel implements ActionListener {
     public static void main(String[] args) {
     	
 		final Client client;
+		final Client client2;
 		try {
 			client = new Client(InetAddress.getLocalHost(), 12000);
+			client2 = new Client(InetAddress.getLocalHost(), 13000);
+			System.out.println("client : " + client);
+			System.out.println("client2 : " + client2);
 			//Planifier une tache pour le thread
 	        //creer et affiche le GUI
 	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
 	            public void run() {
 	                createAndShowGUI(client);
-	            }
-	        });
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
-		final Client client2;
-		try {
-			client2 = new Client(InetAddress.getLocalHost(), 13000);
-			//Planifier une tache pour le thread
-	        //creer et affiche le GUI
-	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-	            public void run() {
 	                createAndShowGUI(client2);
 	            }
 	        });
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		
       
     }
 }

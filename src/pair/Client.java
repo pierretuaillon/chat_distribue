@@ -13,13 +13,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 import p2p.Annuaire;
 import node.ChordPeer;
 
-public class Client implements Runnable {
+public class Client /*implements Runnable */{
 	
 	private long key;	
 	private InetAddress adr;
@@ -36,12 +35,12 @@ public class Client implements Runnable {
 	 * @param port
 	 */
 	public Client (InetAddress adressClient, int port){
-		this.key = genererKey(adressClient);
+		this.key = genererKey(adressClient, port);
 		this.adr = adressClient;
 		this.port = port;
 		this.chordPeer = new ChordPeer(this.key);
 		this.chordPeer.setClient(this);
-		
+		this.socket = new Socket();
 		try {
 			//this.serverSocket = new ServerSocket(this.chordPeer.getClient().getPort());
 			this.serverSocket = new ServerSocket(port);
@@ -60,12 +59,24 @@ public class Client implements Runnable {
 		}
 		this.joinMainChord(handle);
 		
+		Thread t = new Thread() {
+		    public void run() {
+		    	try {
+					execute();
+					System.out.println("socket lancé");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		};
+		t.start();		
+		
 		//this.chordPeer.getSalons().
 		
 	}
 	
-	private long genererKey(InetAddress adressClient){
-		return adressClient.hashCode();
+	private long genererKey(InetAddress adressClient, int port){
+		 return adressClient.hashCode() + port;
 	}
 	
 	/**
@@ -127,9 +138,12 @@ public class Client implements Runnable {
 		System.out.println("destinatairePort : " + destinatairePort);
 		InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(destinataireAdresse, destinatairePort);
 		System.out.println("destinaireAdresseFormat : " + destinaireAdresseFormat);
+		
+		System.out.println("port via chorPeer "  + this.chordPeer.getClient().getPort());
+		
 		try {
 			System.out.println("(SocketAddress) destinaireAdresseFormat : " + (SocketAddress) destinaireAdresseFormat);
-
+			
 			this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
 
 			//Send the message to the server
@@ -178,11 +192,6 @@ public class Client implements Runnable {
 		return chordPeer;
 	}
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	public void execute() throws IOException {
 
@@ -200,8 +209,6 @@ public class Client implements Runnable {
             BufferedReader br = new BufferedReader(isr);
             String data = br.readLine();
             System.out.println("Message received from client is " + data);
-
-			//TODO new Thread(new Client().start());
 		}
 	}
 	
