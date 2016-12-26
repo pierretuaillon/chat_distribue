@@ -13,6 +13,9 @@ public class Annuaire {
 
 	ArrayList<Client> listeClient = new ArrayList<Client>();
 	
+	public Annuaire() {
+	}
+
 	public ChordPeer getChordPeerHandle() {
 		if (this.listeClient.isEmpty()) {
 			return null;

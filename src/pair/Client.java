@@ -1,9 +1,18 @@
 package pair;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
@@ -31,19 +40,25 @@ public class Client implements Runnable {
 		this.adr = adressClient;
 		this.port = port;
 		this.chordPeer = new ChordPeer(this.key);
+		this.chordPeer.setClient(this);
 		
 		try {
-			this.serverSocket = new ServerSocket(this.chordPeer.getClient().getPort());
+			//this.serverSocket = new ServerSocket(this.chordPeer.getClient().getPort());
+			this.serverSocket = new ServerSocket(port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		if (annuaire == null) {
+			annuaire = new Annuaire();
+		}
+		annuaire.ajouterClient(this);
 		
 		ChordPeer handle = annuaire.getChordPeerHandle();
 		if (handle == null) {
 			handle = this.chordPeer;
 		}
 		this.joinMainChord(handle);
-		annuaire.ajouterClient(this);
 		
 		//this.chordPeer.getSalons().
 		
@@ -56,10 +71,13 @@ public class Client implements Runnable {
 	/**
 	 * Retourne l'emplacement de key dans l’anneau
 	 * @param key du pair souhaitant rejoindre l’anneau
-	 * @return int
+	 * @return InetAddress adresse IP du successeur de key dans l’anneau
 	 */
-	public int findMainChord(long key)  {
-		return 0;
+	public InetAddress findMainChord(long key)  {
+		
+		ChordPeer responsable = this.chordPeer.findkey(key);
+		return responsable.getSuccesseur().getClient().getAdr();
+		
 	}
 	
 	/**
@@ -90,10 +108,6 @@ public class Client implements Runnable {
 	 */
 	public void forwardMessage(String data) {
 		
-		// Faire circuler
-		// sendToChatRoom ? 
-		// TODO
-		
 		// Pas circuler deux fois le meme message
 		for (byte[] ancienMessageByte : this.chordPeer.getChainesStockees()) {
 			String ancienMessage = new String(ancienMessageByte, StandardCharsets.UTF_8);
@@ -101,6 +115,38 @@ public class Client implements Runnable {
 				return;
 			}
 		}
+		
+		// TODO Au pluriel ?
+		/*for (ChordPeer successeur : this.chordPeer.getSuccesseur()) {
+			
+		}*/
+		
+		InetAddress destinataireAdresse = this.chordPeer.getSuccesseur().getClient().getAdr();
+		System.out.println("destinataireAdresse : " + destinataireAdresse);
+		int destinatairePort = this.chordPeer.getSuccesseur().getClient().getPort();
+		System.out.println("destinatairePort : " + destinatairePort);
+		InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(destinataireAdresse, destinatairePort);
+		System.out.println("destinaireAdresseFormat : " + destinaireAdresseFormat);
+		try {
+			System.out.println("(SocketAddress) destinaireAdresseFormat : " + (SocketAddress) destinaireAdresseFormat);
+
+			this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
+
+			//Send the message to the server
+	        OutputStream os = socket.getOutputStream();
+	        OutputStreamWriter osw = new OutputStreamWriter(os);
+	        BufferedWriter bw = new BufferedWriter(osw);
+
+	        bw.write(data);
+	        bw.flush();
+	        
+		} catch (SocketTimeoutException ste) {
+			System.out.println("Timeout depasse");
+			forwardMessage(data);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 	@Override
@@ -138,19 +184,6 @@ public class Client implements Runnable {
 		
 	}
 	
-	public static void main(String[] args) {
-
-		Client client;
-		try {
-			client = new Client(InetAddress.getLocalHost(), 12000);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
-		// definir le timeout
-		// new SocketException("Timeout depasse");
-	}
-	
 	public void execute() throws IOException {
 
 		while (true) {
@@ -160,6 +193,13 @@ public class Client implements Runnable {
 			int c_port = this.socket.getPort();
 			System.out.format("[Serveur] : Arr. Client IP %s sur %d\n", c_ip, c_port);
 			System.out.format("[Serveur ]: Creation du thread T_%d\n", c_port);
+			
+			//Reading the message from the client
+            InputStream is = this.socket.getInputStream();
+            InputStreamReader isr = new InputStreamReader(is);
+            BufferedReader br = new BufferedReader(isr);
+            String data = br.readLine();
+            System.out.println("Message received from client is " + data);
 
 			//TODO new Thread(new Client().start());
 		}

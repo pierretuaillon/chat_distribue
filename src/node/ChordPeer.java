@@ -43,42 +43,28 @@ public class ChordPeer {
 	 */
 	public ChordPeer findkey(long key) {
 		// Cas pair unique
-		if (this == this.successeur && this == this.predecesseur) {
+		if (this == this.successeur || this == this.predecesseur) {
 			return this;
 		}
 		
-		// Cas intervalles circulaires
-		if (this.predecesseur.getKey() > this.key) {
+		if (this.predecesseur != null) {
+			// Cas intervalles circulaires
+			if (this.predecesseur.getKey() > this.key) {
+				
+				// Si on considere qu'on va jusqu'a 100 cles, a voir
+				if (this.predecesseur.getKey() <= key && key <= 100 || key >= 0 && key <= this.key) {
+					return this;
+				}
+			}
 			
-			// Si on considere qu'on va jusqu'a 100 cles, a voir
-			if (this.predecesseur.getKey() <= key && key <= 100 || key >= 0 && key <= this.key) {
+			// Cas non circulaire ou je suis responsable
+			if (key > this.predecesseur.getKey() && key <= this.key) {
 				return this;
 			}
 		}
 		
-		// Cas non circulaire ou je suis responsable
-		if (key > this.predecesseur.getKey() && key <= this.key) {
-			return this;
-		}
-		
 		// Sinon je me refere a mon successeur
 		return this.successeur.findkey(key);
-	}
-	
-	/** 
-	 * Renvoie la chaine dont la clef est key
-	 * @param key
-	 */
-	public void getItem(long key) {
-		// Utiliser la fonction findkey afin de determiner le pair responsable de key
-	}
-	
-	/** 
-	 * Publie la chaine dont la clef est key et la stocke dans le dictionnaire du pair responsable de key
-	 * @param key
-	 */
-	public void setItem(long key) {
-		
 	}
 	
 	public long getKey() {
@@ -111,6 +97,10 @@ public class ChordPeer {
 
 	public Client getClient() {
 		return client;
+	}
+	
+	public void setClient(Client c) {
+		this.client = c;
 	}
 
 	@Override

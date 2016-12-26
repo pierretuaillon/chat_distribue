@@ -5,6 +5,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -12,18 +14,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import pair.Client;
+
 public class Graphique_client extends JPanel implements ActionListener {
 
 	JPanel panel;
     JTextField textField;
     JTextArea textArea;
     JTextArea textArea_Pseudo;
+    Client client;
     
     final static String newline = "\n";
 
     
-    public Graphique_client() {
+    public Graphique_client(Client client) {
         super(new GridBagLayout());
+        
+        this.client = client;
 
         textField = new JTextField(70);
         textField.addActionListener(this);
@@ -50,6 +57,7 @@ public class Graphique_client extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
         String text = textField.getText();
         textArea.append(text + newline);
+        client.forwardMessage(text);
         //textField.selectAll();
         textField.setText("");
         //Make sure the new text is visible, even if there
@@ -62,14 +70,14 @@ public class Graphique_client extends JPanel implements ActionListener {
      * this method should be invoked from the
      * event dispatch thread.
      */
-    private static void createAndShowGUI() {
-        //Création de la Frame
+    private static void createAndShowGUI(Client client) {
+        //Crï¿½ation de la Frame
         JFrame frame = new JFrame("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         
-        //Ajout des composant à la fenetre
-        frame.add(new Graphique_client(), BorderLayout.LINE_START);
+        //Ajout des composant ï¿½ la fenetre
+        frame.add(new Graphique_client(client), BorderLayout.LINE_START);
         Pseudo_Graphique pseudo = new Pseudo_Graphique("Test");
         JPanel pan = new JPanel();
         pan.setLayout(new BorderLayout());
@@ -90,12 +98,35 @@ public class Graphique_client extends JPanel implements ActionListener {
     }
 
     public static void main(String[] args) {
-        //Planifier une tache pour le thread
-        //creer et affiche le GUI
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+    	
+		final Client client;
+		try {
+			client = new Client(InetAddress.getLocalHost(), 12000);
+			//Planifier une tache pour le thread
+	        //creer et affiche le GUI
+	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                createAndShowGUI(client);
+	            }
+	        });
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+		final Client client2;
+		try {
+			client2 = new Client(InetAddress.getLocalHost(), 13000);
+			//Planifier une tache pour le thread
+	        //creer et affiche le GUI
+	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+	            public void run() {
+	                createAndShowGUI(client2);
+	            }
+	        });
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+      
     }
 }
