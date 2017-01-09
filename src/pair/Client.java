@@ -1,6 +1,5 @@
 package pair;
 
-
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class Client /*implements Runnable */{
 		Thread t = new Thread() {
 		    public void run() {
 		    	try {
-		    		System.out.println("Thread lanc�");
+		    		System.out.println("Thread lance");
 					execute();
 					
 				} catch (IOException e) {
@@ -120,6 +119,8 @@ public class Client /*implements Runnable */{
 	 */
 	public void forwardMessage(String data) {
 		
+		System.out.println("forwardMessage de " + data);
+		
 		// Pas circuler deux fois le meme message
 		for (byte[] ancienMessageByte : this.chordPeer.getChainesStockees()) {
 			String ancienMessage = new String(ancienMessageByte, StandardCharsets.UTF_8);
@@ -145,13 +146,15 @@ public class Client /*implements Runnable */{
 		try {
 			System.out.println("(SocketAddress) destinaireAdresseFormat : " + (SocketAddress) destinaireAdresseFormat);
 			
+			/*Le connect doit etre deplace : quand on arrive dans l’anneau, connect avec le destinataire
+			Notre destinataire initial s’occupe d’envoyer aux autres*/
 			this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
 
 			//Send the message to the server
 	        OutputStream os = socket.getOutputStream();
 	        OutputStreamWriter osw = new OutputStreamWriter(os);
 	        BufferedWriter bw = new BufferedWriter(osw);
-
+	       
 	        bw.write(data);
 	        bw.flush();
 	        
@@ -205,9 +208,29 @@ public class Client /*implements Runnable */{
 	            System.out.println("Just connected to " + this.socket.getRemoteSocketAddress());
 	            DataInputStream in = new DataInputStream(this.socket.getInputStream());
 	            
-	            System.out.println(in.read());
-	            System.out.println("J ai recu : "  + in.readUTF());
-	            System.out.println("test23214585621456215");
+	            // available stream to be read
+	            int length = in.available();
+	            
+	            // create buffer
+	            byte[] buf = new byte[length];
+	            
+	            // read the full data into the buffer
+	            in.readFully(buf);
+	            
+	            System.out.println("J'ai reçu : ");
+	            
+	            // for each byte in the buffer
+	            for (byte b:buf)
+	            {
+	               // convert byte to char
+	               char c = (char)b; 
+	               
+	               // prints character
+	               System.out.print(c);
+	            }
+	            
+	            
+	            System.out.println("close socket");
 	            this.socket.close();
 	       
 	         }catch(SocketTimeoutException s) {
