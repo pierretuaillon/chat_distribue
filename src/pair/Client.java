@@ -165,6 +165,8 @@ public class Client /*implements Runnable */{
 			e.printStackTrace();
 		}
 		
+		// forwardMessage du successeur
+		
 	}
 	
 	@Override
