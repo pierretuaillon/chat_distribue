@@ -91,7 +91,8 @@ public class Client /*implements Runnable */{
 	}
 
 	private long genererKey(InetAddress adressClient, int port){
-		return adressClient.hashCode() + port;
+		//System.out.println((adressClient.hashCode() + port) *-1);
+		return ((adressClient.hashCode() + port) *-1);
 	}
 
 	/**
