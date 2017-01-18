@@ -11,11 +11,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-
 import javax.json.Json;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
@@ -58,12 +55,11 @@ public class Client /*implements Runnable */{
 			// Si je ne suis pas le client par defaut, je me connecte a celui-ci (il ne va pas se connecter a lui-meme)
 			else {
 				this.joinMainChord(annuaire.getChordPeer());
-				InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(annuaire.getAdresseClientDefaut(), annuaire.getPortClientDefaut());
+				InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
 				this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
 			}
 		
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 			
@@ -72,17 +68,7 @@ public class Client /*implements Runnable */{
 		    	try {
 		    		System.out.println("Thread lance");
 		    		
-					// Avant le execute, on envoie au serveur notre demande pour s'integrer a l'anneau
-			        OutputStream os = socket.getOutputStream();
-			        OutputStreamWriter osw = new OutputStreamWriter(os);
-			        BufferedWriter bw = new BufferedWriter(osw);
-			       
-			        JsonObjectBuilder comBuilder = Json.createObjectBuilder();
-					comBuilder.add("GET", "CONNEXION").add("KEY", key);
-					JsonObject jsonMessage = comBuilder.build();
 					
-			        bw.write(jsonMessage.toString());
-			        bw.flush();
 			        
 					execute();
 					
@@ -172,7 +158,7 @@ public class Client /*implements Runnable */{
 	        OutputStream os = socket.getOutputStream();
 	        OutputStreamWriter osw = new OutputStreamWriter(os);
 	        BufferedWriter bw = new BufferedWriter(osw);
-	       
+	        System.out.println("Avant Write data " + data);
 	        bw.write(data);
 	        bw.flush();
 	        
@@ -262,7 +248,7 @@ public class Client /*implements Runnable */{
 	            }
 	            
 	            String messageRecu = sb.toString();
-	            System.out.print("Message recu : " + messageRecu);
+	            System.out.println("Message recu : " + messageRecu);
 	            
 	            // Faudrait passer par JSON dans l'envoi et reception
 	            // puis gererReceptionMessage()
@@ -278,9 +264,19 @@ public class Client /*implements Runnable */{
 	            break;
 	         }
 	      }
+		/*
+		// Avant le execute, on envoie au serveur notre demande pour s'integrer a l'anneau
+        OutputStream os = socket.getOutputStream();
+        OutputStreamWriter osw = new OutputStreamWriter(os);
+        BufferedWriter bw = new BufferedWriter(osw);
+       
+        JsonObjectBuilder comBuilder = Json.createObjectBuilder();
+		comBuilder.add("GET", "CONNEXION").add("KEY", key);
+		JsonObject jsonMessage = comBuilder.build();
 		
-		
-		
+        bw.write(jsonMessage.toString());
+        bw.flush();
+		*/
 		/*
 		while (true) {
 			System.out.println("[Serveur]:  waiting for connexion");

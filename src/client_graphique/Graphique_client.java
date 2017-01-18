@@ -56,6 +56,7 @@ public class Graphique_client extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
         String text = textField.getText();
         textArea.append(text + newline);
+        System.out.println("JE SUIS AVANT FOR " + client);
         client.forwardMessage(text);
         //textField.selectAll();
         textField.setText("");
