@@ -136,17 +136,8 @@ public class Client /*implements Runnable */{
 				return;
 			}
 		}
-		
-		// TODO Au pluriel ?
-		/*for (ChordPeer successeur : this.chordPeer.getSuccesseur()) {
-			
-		}*/
-		
-		InetAddress destinataireAdresse = this.chordPeer.getSuccesseur().getClient().getAdr();
-		System.out.println("destinataireAdresse : " + destinataireAdresse);
-		int destinatairePort = this.chordPeer.getSuccesseur().getClient().getPort();
-		System.out.println("destinatairePort : " + destinatairePort);
-		InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(destinataireAdresse, destinatairePort);
+				
+		InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
 		System.out.println("destinaireAdresseFormat : " + destinaireAdresseFormat);
 		
 		System.out.println("port via chorPeer "  + this.chordPeer.getClient().getPort());
@@ -215,13 +206,15 @@ public class Client /*implements Runnable */{
 	
 	public void execute() throws IOException {
 
+		
+	    
 		while(true) {
 	         try {
-	            System.out.println("Waiting for client on port " + 
-	               serverSocket.getLocalPort() + "...");
-	            this.socket = serverSocket.accept();
-	            
-	            System.out.println("Just connected to " + this.socket.getRemoteSocketAddress());
+	        	 System.out.println("Waiting for client on port " + 
+	  	               serverSocket.getLocalPort() + "...");
+	        	 this.socket = serverSocket.accept();
+	  	    	System.out.println("Just connected to " + this.socket.getRemoteSocketAddress());
+	  	    
 	            DataInputStream in = new DataInputStream(this.socket.getInputStream());
 	            
 	            // available stream to be read
@@ -233,7 +226,7 @@ public class Client /*implements Runnable */{
 	            // read the full data into the buffer
 	            in.readFully(buf);
 	            
-	            System.out.println("J'ai reçu : ");
+	            System.out.println("J'ai recu : ");
 	            StringBuilder sb = new StringBuilder(); // ou StringBuffer je sais plus
 	            
 	            // for each byte in the buffer
@@ -253,8 +246,8 @@ public class Client /*implements Runnable */{
 	            // Faudrait passer par JSON dans l'envoi et reception
 	            // puis gererReceptionMessage()
 	            
-	            System.out.println("close socket");
-	            this.socket.close();
+	            //System.out.println("close socket");
+	            //this.socket.close();
 	       
 	         }catch(SocketTimeoutException s) {
 	            System.out.println("Socket timed out!");
