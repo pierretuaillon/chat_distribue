@@ -26,6 +26,10 @@ public class Graphique_client extends JPanel implements ActionListener {
     
     final static String newline = "\n";
 
+    public JTextField getTextField(){
+    	return this.textField;
+    }
+    
     public Graphique_client(Client client) {
         super(new GridBagLayout());
         
@@ -56,7 +60,6 @@ public class Graphique_client extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent evt) {
         String text = textField.getText();
         textArea.append(text + newline);
-        System.out.println("JE SUIS AVANT FOR " + client);
         client.forwardMessage(text);
         //textField.selectAll();
         textField.setText("");
@@ -71,7 +74,7 @@ public class Graphique_client extends JPanel implements ActionListener {
      * event dispatch thread.
      */
     private static void createAndShowGUI(Client client) {
-        //Cr�ation de la Frame
+        //Creation de la Frame
         JFrame frame = new JFrame("Client");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
@@ -92,6 +95,7 @@ public class Graphique_client extends JPanel implements ActionListener {
         
         frame.add(pan , BorderLayout.CENTER);
         
+      
         //affiche la fenetre
         frame.pack();
         frame.setVisible(true);
@@ -107,6 +111,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 			client = new Client(InetAddress.getLocalHost(), 12000);
 			client2 = new Client(InetAddress.getLocalHost(), 13000);
 			client3 = new Client(InetAddress.getLocalHost(), 14000);
+
 			System.out.println("client : " + client);
 			System.out.println("client2 : " + client2);
 			//Planifier une tache pour le thread

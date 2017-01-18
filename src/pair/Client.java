@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.swing.JTextField;
 
 import client_graphique.ServiceClient;
 import p2p.Annuaire;
@@ -154,6 +155,7 @@ public class Client /*implements Runnable */{
 		int destinatairePort = this.chordPeer.getSuccesseur().getClient().getPort();
 		System.out.println("destinatairePort : " + destinatairePort);
 		InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(destinataireAdresse, destinatairePort);
+
 		System.out.println("destinaireAdresseFormat : " + destinaireAdresseFormat);
 
 		System.out.println("port via chorPeer "  + this.chordPeer.getClient().getPort());
@@ -233,6 +235,8 @@ public class Client /*implements Runnable */{
 
 	public void execute() throws IOException {
 
+		
+	    
 		while(true) {
 			try {
 				System.out.println("Waiting for client on port " + 
@@ -251,6 +255,7 @@ public class Client /*implements Runnable */{
 				break;
 			}
 		}
+
 		/*
 		// Avant le execute, on envoie au serveur notre demande pour s'integrer a l'anneau
         OutputStream os = socket.getOutputStream();
