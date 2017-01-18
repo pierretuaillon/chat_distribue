@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.swing.JTextField;
 
 import p2p.Annuaire;
 import node.ChordPeer;
@@ -210,6 +211,7 @@ public class Client /*implements Runnable */{
 	    
 		while(true) {
 	         try {
+	        	 
 	        	 System.out.println("Waiting for client on port " + 
 	  	               serverSocket.getLocalPort() + "...");
 	        	 this.socket = serverSocket.accept();
@@ -242,7 +244,6 @@ public class Client /*implements Runnable */{
 	            
 	            String messageRecu = sb.toString();
 	            System.out.println("Message recu : " + messageRecu);
-	            
 	            // Faudrait passer par JSON dans l'envoi et reception
 	            // puis gererReceptionMessage()
 	            
