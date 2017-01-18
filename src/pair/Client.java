@@ -48,38 +48,25 @@ public class Client /*implements Runnable */{
 		try {
 			//this.serverSocket = new ServerSocket(this.chordPeer.getClient().getPort());
 			this.serverSocket = new ServerSocket(port);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		
-		// Je suis le premier a arriver donc le client par defaut
-		if (annuaire == null) { // Singleton plutot ?
-			try {
-				annuaire = new Annuaire(InetAddress.getLocalHost());
-			} catch (UnknownHostException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			// Je suis le premier a arriver donc le client par defaut
+			if (annuaire == null) { // Singleton plutot ?
+					annuaire = new Annuaire(InetAddress.getLocalHost());
+					annuaire.setChordPeer(this.chordPeer);
+	
 			}
-		}
-		// Si je ne suis pas le client par defaut, je me connecte a celui-ci (il ne va pas se connecter a lui-meme)
-		else {
-			InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(annuaire.getAdresseClientDefaut(), annuaire.getPortClientDefaut());
-			try {
+			// Si je ne suis pas le client par defaut, je me connecte a celui-ci (il ne va pas se connecter a lui-meme)
+			else {
+				this.joinMainChord(annuaire.getChordPeer());
+				InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(annuaire.getAdresseClientDefaut(), annuaire.getPortClientDefaut());
 				this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			}
+		
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		/*annuaire.ajouterClient(this);
-		
-		ChordPeer handle = annuaire.getChordPeerHandle();
-		if (handle == null) {
-			handle = this.chordPeer;
-		}*/
-		
-		//this.joinMainChord();
-		
+			
 		Thread t = new Thread() {
 		    public void run() {
 		    	try {

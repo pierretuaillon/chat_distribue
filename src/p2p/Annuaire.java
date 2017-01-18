@@ -14,9 +14,20 @@ public class Annuaire {
 	
 	InetAddress adresseClientDefaut;
 	int portClientDefaut = 12000;
-
+	
+	ChordPeer chordPeer;
+	
+	
+	public ChordPeer getChordPeer(){
+		return this.chordPeer;
+	}
+	
 	//ArrayList<Client> listeClient = new ArrayList<Client>();
 	
+	public void setChordPeer(ChordPeer chordPeer) {
+		this.chordPeer = chordPeer;
+	}
+
 	/*
 	 * Fournir InetAddress.getLocalHost()
 	 */
