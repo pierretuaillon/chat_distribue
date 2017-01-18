@@ -26,7 +26,6 @@ public class Graphique_client extends JPanel implements ActionListener {
     
     final static String newline = "\n";
 
-    
     public Graphique_client(Client client) {
         super(new GridBagLayout());
         
