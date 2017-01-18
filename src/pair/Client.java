@@ -14,6 +14,11 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+
 import p2p.Annuaire;
 import node.ChordPeer;
 
@@ -73,12 +78,25 @@ public class Client /*implements Runnable */{
 			handle = this.chordPeer;
 		}*/
 		
-		//this.joinMainChord(handle);
+		//this.joinMainChord();
 		
 		Thread t = new Thread() {
 		    public void run() {
 		    	try {
 		    		System.out.println("Thread lance");
+		    		
+					// Avant le execute, on envoie au serveur notre demande pour s'integrer a l'anneau
+			        OutputStream os = socket.getOutputStream();
+			        OutputStreamWriter osw = new OutputStreamWriter(os);
+			        BufferedWriter bw = new BufferedWriter(osw);
+			       
+			        JsonObjectBuilder comBuilder = Json.createObjectBuilder();
+					comBuilder.add("GET", "CONNEXION").add("KEY", key);
+					JsonObject jsonMessage = comBuilder.build();
+					
+			        bw.write(jsonMessage.toString());
+			        bw.flush();
+			        
 					execute();
 					
 				} catch (IOException e) {
@@ -209,7 +227,14 @@ public class Client /*implements Runnable */{
 		return chordPeer;
 	}
 	
-	public void gererReceptionMessage() {
+	public void gererReceptionMessage(JsonObject message) {
+		
+		// POST = message normal aux gens
+		// Si je gere ca, c'est que je suis le serveur
+		if (message.getString("GET") == "CONNEXION") {
+			InetAddress successeurDuNew = this.findMainChord(Long.parseLong(message.getString("KEY")));
+		}
+
 		// Le client defaut va recevoir des instructions que les autres ne recevront pas
 		// Genre cas ou un nouveau client veut rejoindre etc.
 		// Les autres recevront les messages uniquement (par le client defaut) et peut-etre les notif d'event (nouvel arrivant...)
