@@ -1,5 +1,6 @@
 package p2p;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 import node.ChordPeer;
@@ -10,25 +11,41 @@ import pair.Client;
  *
  */
 public class Annuaire {
-
-	ArrayList<Client> listeClient = new ArrayList<Client>();
 	
-	public Annuaire() {
+	InetAddress adresseClientDefaut;
+	int portClientDefaut = 12000;
+
+	//ArrayList<Client> listeClient = new ArrayList<Client>();
+	
+	/*
+	 * Fournir InetAddress.getLocalHost()
+	 */
+	public Annuaire(InetAddress localHost) {
+		this.adresseClientDefaut = localHost;
 	}
 
-	public ChordPeer getChordPeerHandle() {
+	public InetAddress getAdresseClientDefaut() {
+		return adresseClientDefaut;
+	}
+
+	public int getPortClientDefaut() {
+		return portClientDefaut;
+	}
+
+	/*public ChordPeer getChordPeerHandle() {
 		if (this.listeClient.isEmpty()) {
 			return null;
 		}
 		return this.listeClient.get(0).getChordPeer();
-	}
+		
+	}*/
 	
-	public void ajouterClient(Client c) {
+	/*public void ajouterClient(Client c) {
 		this.listeClient.add(c);
 	}
 	
 	public void supprimerClient(Client c) {
 		this.listeClient.remove(c);
-	}
+	}*/
 
 }

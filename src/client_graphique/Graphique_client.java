@@ -102,6 +102,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 		final Client client;
 		final Client client2;
 		try {
+			// Client par defaut de l'annuaire
 			client = new Client(InetAddress.getLocalHost(), 12000);
 			client2 = new Client(InetAddress.getLocalHost(), 13000);
 			System.out.println("client : " + client);

@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 import p2p.Annuaire;
@@ -46,17 +47,33 @@ public class Client /*implements Runnable */{
 			e.printStackTrace();
 		}
 		
-		if (annuaire == null) {
-			annuaire = new Annuaire();
+		// Je suis le premier a arriver donc le client par defaut
+		if (annuaire == null) { // Singleton plutot ?
+			try {
+				annuaire = new Annuaire(InetAddress.getLocalHost());
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		annuaire.ajouterClient(this);
+		// Si je ne suis pas le client par defaut, je me connecte a celui-ci (il ne va pas se connecter a lui-meme)
+		else {
+			InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(annuaire.getAdresseClientDefaut(), annuaire.getPortClientDefaut());
+			try {
+				this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		/*annuaire.ajouterClient(this);
 		
 		ChordPeer handle = annuaire.getChordPeerHandle();
 		if (handle == null) {
 			handle = this.chordPeer;
-		}
+		}*/
 		
-		this.joinMainChord(handle);
+		//this.joinMainChord(handle);
 		
 		Thread t = new Thread() {
 		    public void run() {
@@ -145,10 +162,6 @@ public class Client /*implements Runnable */{
 		
 		try {
 			System.out.println("(SocketAddress) destinaireAdresseFormat : " + (SocketAddress) destinaireAdresseFormat);
-			
-			/*Le connect doit etre deplace : quand on arrive dans l’anneau, connect avec le destinataire
-			Notre destinataire initial s’occupe d’envoyer aux autres*/
-			this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
 
 			//Send the message to the server
 	        OutputStream os = socket.getOutputStream();
@@ -191,13 +204,16 @@ public class Client /*implements Runnable */{
 	public int getPort() {
 		return port;
 	}
-	
-	
 
 	public ChordPeer getChordPeer() {
 		return chordPeer;
 	}
-
+	
+	public void gererReceptionMessage() {
+		// Le client defaut va recevoir des instructions que les autres ne recevront pas
+		// Genre cas ou un nouveau client veut rejoindre etc.
+		// Les autres recevront les messages uniquement (par le client defaut) et peut-etre les notif d'event (nouvel arrivant...)
+	}
 	
 	public void execute() throws IOException {
 
@@ -220,17 +236,24 @@ public class Client /*implements Runnable */{
 	            in.readFully(buf);
 	            
 	            System.out.println("J'ai reçu : ");
+	            StringBuilder sb = new StringBuilder(); // ou StringBuffer je sais plus
 	            
 	            // for each byte in the buffer
 	            for (byte b:buf)
 	            {
 	               // convert byte to char
 	               char c = (char)b; 
+	               sb.append(c);
 	               
 	               // prints character
 	               System.out.print(c);
 	            }
 	            
+	            String messageRecu = sb.toString();
+	            System.out.print("Message recu : " + messageRecu);
+	            
+	            // Faudrait passer par JSON dans l'envoi et reception
+	            // puis gererReceptionMessage()
 	            
 	            System.out.println("close socket");
 	            this.socket.close();
