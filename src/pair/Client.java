@@ -209,7 +209,7 @@ public class Client /*implements Runnable */{
 	 */
 	public void forwardMessage(String data) {
 
-		System.out.println("Je suis " + toString() + " et j'envoie a " + this.chordPeer.getSuccesseur().getClient());
+		System.out.println("Je suis " + toString() + ", mon successeur direct " + this.chordPeer.getSuccesseur().getClient());
 		System.out.println("forwardMessage de " + data);
 
 		// Pas circuler deux fois le meme message parmi ceux deja envoyes
@@ -227,9 +227,14 @@ public class Client /*implements Runnable */{
 			}
 		}
 
-		try {
-			if (this.getNextSuccesseurSalon() != null) {
-				//this.socket = new Socket(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
+		System.out.println("on va regarder les successeurs");
+
+
+		System.out.println("this.getNextSuccesseurSalon() : " + this.getNextSuccesseurSalon());
+		if (this.getNextSuccesseurSalon() != null) {
+			System.out.println("Successeur du meme salon : " + this.getNextSuccesseurSalon());
+			//this.socket = new Socket(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
+			try {
 				this.socket = new Socket(this.getNextSuccesseurSalon().getClient().getAdr(), this.getNextSuccesseurSalon().getClient().getPort());
 
 				OutputStream os = socket.getOutputStream();
@@ -242,15 +247,18 @@ public class Client /*implements Runnable */{
 				byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
 				this.chordPeer.getChainesStockees().add(tradBytes);
 
-				this.socket.close();
-			}
+				System.out.println("Fin envoi");
 
-		} catch (SocketTimeoutException ste) {
-			System.out.println("Timeout depasse");
-			this.forwardMessage(data);
-		} catch (IOException e) {
-			e.printStackTrace();
+				this.socket.close();
+			} catch (SocketTimeoutException ste) {
+				System.out.println("Timeout depasse");
+				this.forwardMessage(data);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+
+
 
 		if (getAnnuaire() != null) {
 			System.out.println("L'annuaire est : client " + getAnnuaire().getPortClientConnecte());
@@ -261,6 +269,9 @@ public class Client /*implements Runnable */{
 
 	@Override
 	public String toString() {
+		if (this.salon != null) {
+			return "Client [id=" + this.key + ", salon=" + this.salon.getNom() + ", adr=" + this.adr + ", port=" + this.port + "]";
+		}
 		return "Client [id=" + this.key + ", adr=" + this.adr + ", port=" + this.port + "]";
 	}
 
@@ -377,7 +388,7 @@ public class Client /*implements Runnable */{
 
 		while (successeur != this.chordPeer) {
 
-			if (successeur.getClient().getSalon() == this.salon) {
+			if (successeur.getClient().getSalon().getNom().equals(this.salon.getNom())) {
 				return successeur;
 			}
 			successeur = successeur.getSuccesseur();
