@@ -114,10 +114,10 @@ public class Client /*implements Runnable */{
 	public void joinMainChord(ChordPeer handleChordPeer) {
 
 		System.out.println();
-		
+
 		System.out.println("joinMainChord");
 		System.out.println("Mon successeur : " + handleChordPeer.findkey(this.getKey()));
-		
+
 		ChordPeer successeur = handleChordPeer.findkey(this.getKey());
 
 		ChordPeer predecesseur = successeur.getPredecesseur();
@@ -138,6 +138,30 @@ public class Client /*implements Runnable */{
 	 * i,e notre predecesseur devra des lors pointer sur notre successeur
 	 */
 	public void leaveMainChord() {
+
+		System.out.println("maxkey : " + getAnnuaire().getMaxKey());
+
+		// Si je suis la max key de l'annuaire, on cherche l'autre max en dessous
+		if (getAnnuaire() != null) {
+			if (getAnnuaire().getMaxKey() == this.key) {
+				System.out.println("Je pars alors que suis la max key");
+				long maxKey = this.chordPeer.getSuccesseur().getClient().getKey();
+				//System.out.println("Key de mon successeur : " + maxKey);
+
+				ChordPeer next = this.chordPeer.getSuccesseur().getSuccesseur();
+				//System.out.println("Prochain sur la liste : " + next.getClient().toString());
+				while (next != this.chordPeer) {
+					if (maxKey < next.getKey()) {
+						//System.out.println("Nouveau max : " + next.getKey());
+						maxKey = next.getKey();
+					}
+					next = next.getSuccesseur();
+					//System.out.println("On passe au prochain : " + next);
+				}
+				System.out.println("Nouveau max de l'annuaire : " + maxKey);
+				getAnnuaire().setMaxKey(maxKey);
+			}
+		}
 
 		this.chordPeer.getPredecesseur().setSuccesseur(this.chordPeer.getSuccesseur());
 		this.chordPeer.getSuccesseur().setPredecesseur(this.chordPeer.getPredecesseur());
@@ -164,20 +188,8 @@ public class Client /*implements Runnable */{
 		// On demande a notre predecesseur (qui a maintenant notre successeur en successeur) de transmettre le message de notre depart
 		this.chordPeer.getPredecesseur().getClient().forwardMessage("--> Client " + this.port + " s'est deconnecte");
 
-		/*// Si je suis la max key de l'annuaire, on cherche l'autre max en dessous
-				if (getAnnuaire().testMaxKey(this.key)) {
-					long maxKey = this.chordPeer.getSuccesseur().getClient().getKey();
-
-					ChordPeer next = this.chordPeer.getSuccesseur().getSuccesseur();
-					while (next != this.chordPeer) {
-						if (maxKey < next.getKey()) {
-							maxKey = next.getKey();
-						}
-						next = next.getSuccesseur();
-					}
-					System.out.println("Nouveau max de l'annuaire : " + maxKey);
-					getAnnuaire().setMaxKey(maxKey);*/
 	}
+
 
 	/**
 	 * Faire circuler un message vers son/ses sucesseurs
@@ -293,7 +305,7 @@ public class Client /*implements Runnable */{
 	}
 
 	public void Service_Client(Socket socket2) {
-		
+
 		//System.out.println("Just connected to " + socket2.getRemoteSocketAddress());
 		DataInputStream in;
 		try {
