@@ -31,8 +31,8 @@ public class Client /*implements Runnable */{
 	private static Annuaire annuaire;
 	Graphique_client graphique_client;
 	private SalonConversation salon;
-	
-	
+
+
 	public SalonConversation getSalon() {
 		return salon;
 	}
@@ -228,19 +228,22 @@ public class Client /*implements Runnable */{
 		}
 
 		try {
-			this.socket = new Socket(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
+			if (this.getNextSuccesseurSalon() != null) {
+				//this.socket = new Socket(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
+				this.socket = new Socket(this.getNextSuccesseurSalon().getClient().getAdr(), this.getNextSuccesseurSalon().getClient().getPort());
 
-			OutputStream os = socket.getOutputStream();
-			OutputStreamWriter osw = new OutputStreamWriter(os);
-			BufferedWriter bw = new BufferedWriter(osw);
-			bw.write(data);
-			bw.flush();
+				OutputStream os = socket.getOutputStream();
+				OutputStreamWriter osw = new OutputStreamWriter(os);
+				BufferedWriter bw = new BufferedWriter(osw);
+				bw.write(data);
+				bw.flush();
 
-			// On stocke dans les chaines envoyees
-			byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
-			this.chordPeer.getChainesStockees().add(tradBytes);
+				// On stocke dans les chaines envoyees
+				byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
+				this.chordPeer.getChainesStockees().add(tradBytes);
 
-			this.socket.close();
+				this.socket.close();
+			}
 
 		} catch (SocketTimeoutException ste) {
 			System.out.println("Timeout depasse");
@@ -366,6 +369,22 @@ public class Client /*implements Runnable */{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public ChordPeer getNextSuccesseurSalon() {
+
+		ChordPeer successeur = this.chordPeer.getSuccesseur();
+
+		while (successeur != this.chordPeer) {
+
+			if (successeur.getClient().getSalon() == this.salon) {
+				return successeur;
+			}
+			successeur = successeur.getSuccesseur();
+		}
+
+		return null;
+
 	}
 
 	public static Annuaire getAnnuaire() {
