@@ -53,18 +53,22 @@ public class Client /*implements Runnable */{
 			// Je suis le premier a arriver donc le client par defaut
 			if (getAnnuaire() == null) { // Singleton plutot ?
 				setAnnuaire(new Annuaire(InetAddress.getLocalHost()));
+				this.chordPeer.setPredecesseur(this.chordPeer);
+				this.chordPeer.setSuccesseur(this.chordPeer);
 				getAnnuaire().setChordPeer(this.chordPeer);
 				getAnnuaire().setMaxKey(this.key);
 			}
 			// Si je ne suis pas le client par defaut, je me connecte a celui-ci (il ne va pas se connecter a lui-meme)
 			else {
-				this.joinMainChord(getAnnuaire().getChordPeer());
+
 				if (getAnnuaire().testMaxKey(this.key)){
 					getAnnuaire().setMaxKey(this.key);
 				}
+				this.joinMainChord(getAnnuaire().getChordPeer());
+
 				//InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
 				//this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
-				
+
 				//this.socket = new Socket(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
 
 			}
@@ -116,22 +120,25 @@ public class Client /*implements Runnable */{
 	 * Initialisation des references distantes (predecesseur et successeur)
 	 */
 	public void joinMainChord(ChordPeer handleChordPeer) {
-		
+
+		System.out.println();
+		System.out.println("----");
+
 		System.out.println("joinMainChord");
-		System.out.println("successeur : " + handleChordPeer.findkey(this.getKey()) + " avec key " + this.getKey());
+		System.out.println("successeur : " + handleChordPeer.findkey(this.getKey()));
+
 
 		ChordPeer successeur = handleChordPeer.findkey(this.getKey());
-		ChordPeer predecesseur;
-		if (successeur == this.chordPeer) {
-			predecesseur = successeur.getPredecesseur();
-		}
-		else {
-			predecesseur = this.chordPeer;
-		}
-		
+
+		ChordPeer predecesseur = successeur.getPredecesseur();
+		System.out.println("predecesseur :" + successeur.getPredecesseur());
+
+		System.out.println();
+		System.out.println("----");
+
 		this.chordPeer.setSuccesseur(successeur);
 		this.chordPeer.setPredecesseur(predecesseur);
-		
+
 		successeur.setPredecesseur(this.chordPeer);
 		predecesseur.setSuccesseur(this.chordPeer);
 
@@ -187,7 +194,7 @@ public class Client /*implements Runnable */{
 				this.socket.connect((SocketAddress) destinaireAdresseFormat2, 500);
 				System.out.println("socket connect");
 			}*/
-			
+
 			this.socket = new Socket(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
 
 			//Send the message to the server
@@ -198,7 +205,7 @@ public class Client /*implements Runnable */{
 			bw.write(data);
 			bw.flush();
 			System.out.println("après Write data " + data);
-			
+
 			this.socket.close();
 
 		} catch (SocketTimeoutException ste) {
@@ -254,13 +261,13 @@ public class Client /*implements Runnable */{
 
 	public void execute() throws IOException {
 
-		
-	    
+
+
 		while(true) {
 			try {
 				System.out.println("Waiting for client on port " + 
 						serverSocket.getLocalPort() + "...");
-				
+
 				Socket socketAccept = serverSocket.accept();
 				ServiceClient serviceClient = new ServiceClient(socketAccept, this);
 				serviceClient.run();
