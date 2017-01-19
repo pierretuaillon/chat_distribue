@@ -34,11 +34,21 @@ public class ComboBoxSalon extends JPanel implements ActionListener{
 			i++;
 		}
 		
+		if (salons.isEmpty()){
+			this.client.setSalon(new SalonConversation(SalonConversation.genererKey("Default")));
+		}else{
+			this.client.setSalon(SalonConversation.joinChatRoom(SalonConversation.genererKey("Default")));
+		}
 		
+		ArrayList<String> tampon = SalonConversation.readChatRoom(SalonConversation.genererKey("Default"));
+		for (String string : tampon) {
+    		this.client.getGraphique_client().ajouterMessage(string);
+		}
 		this.listeSalon = new JComboBox<String>(tabNomsSalons);
 		this.listeSalon.setEditable(true);
 		this.listeSalon.addActionListener(this);
 		this.client = client;
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -46,11 +56,22 @@ public class ComboBoxSalon extends JPanel implements ActionListener{
         if(index >= 0) {
         	SalonConversation sc = SalonConversation.joinChatRoom( SalonConversation.genererKey(listeSalon.getItemAt(index).toString()));
         	client.setSalon(sc);
+        	ArrayList<String> tampon = SalonConversation.readChatRoom(SalonConversation.genererKey(listeSalon.getItemAt(index).toString()));
+        	
+        	for (String string : tampon) {
+        		this.client.getGraphique_client().ajouterMessage(string);
+			}
+        	
         }else if("comboBoxEdited".equals(e.getActionCommand())) {
         	String newSalon = listeSalon.getSelectedItem().toString();
         	SalonConversation sc = SalonConversation.joinChatRoom( SalonConversation.genererKey(newSalon));
         	if (sc == null){
         		sc = new SalonConversation(newSalon);
+        	}else{
+        		ArrayList<String> tampon = SalonConversation.readChatRoom(SalonConversation.genererKey(listeSalon.getItemAt(index).toString()));
+            	for (String string : tampon) {
+            		this.client.getGraphique_client().ajouterMessage(string);
+    			}
         	}
         	client.setSalon(sc);
         }

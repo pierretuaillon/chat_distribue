@@ -114,8 +114,7 @@ public class Graphique_client extends JPanel implements ActionListener {
         JPanel pan = new JPanel();
         pan.setLayout(new BorderLayout());
         pan.add(pseudo.getTextArea_Pseudo(), BorderLayout.NORTH);  
-        
-        //String [] listeSalons = {"salon 1", "salon 2", "salon 3", "salon 4", "salon 5"};
+
         ComboBoxSalon cbs = new ComboBoxSalon(client);
         pan.add(cbs.getListeSalon(), BorderLayout.CENTER);
         

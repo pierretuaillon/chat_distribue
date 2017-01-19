@@ -318,7 +318,7 @@ public class Client /*implements Runnable */{
 
 
 
-	public JPanel getGraphique_client() {
+	public Graphique_client getGraphique_client() {
 		return graphique_client;
 	}
 

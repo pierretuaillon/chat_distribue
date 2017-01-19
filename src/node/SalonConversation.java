@@ -10,13 +10,16 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 
 	long KeySalon;
 	String nameSalon;
-	ArrayList<byte[]> tampon;
+	ArrayList<String> tampon = null;
 	
 	
 	public String getNom(){
 		return this.nameSalon;
 	}
 	
+	public ArrayList<String> getTampon(){
+		return this.tampon;
+	}
 	
 	public SalonConversation(){
 		this.nameSalon = "Default";
@@ -81,14 +84,19 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	 * @param chatkey
 	 */
 	public void sendToChatRoom(String s, long chatkey) {
-
+		
 	}
 
 	/**
 	 * Reference a un tampon stockant les messages venant du salon
 	 */
-	public void readChatRoom(long chatkey) {
-
+	public static ArrayList<String> readChatRoom(long chatkey) {
+		HashMap<Long, SalonConversation> salons = SalonConversation.getChatRoomsList();
+		
+		if (salons.get(chatkey) != null){
+			return salons.get(chatkey).getTampon();
+		}else{
+			return null;
+		}
 	}
-
 }
