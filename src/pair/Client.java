@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 import javax.json.Json;
@@ -64,6 +65,7 @@ public class Client /*implements Runnable */{
 				if (getAnnuaire().testMaxKey(this.key)){
 					getAnnuaire().setMaxKey(this.key);
 				}
+				System.out.println("Je suis port " + getPort() + " avec key " + this.key + " et je veux rejoindre");
 				this.joinMainChord(getAnnuaire().getChordPeer());
 
 				//InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
@@ -204,6 +206,11 @@ public class Client /*implements Runnable */{
 			System.out.println("Avant Write data " + data);
 			bw.write(data);
 			bw.flush();
+			
+			// On stocke dans les chaines envoyees
+			byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
+			this.chordPeer.getChainesStockees().add(tradBytes);
+			
 			System.out.println("après Write data " + data);
 
 			this.socket.close();

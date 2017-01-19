@@ -106,11 +106,13 @@ public class Graphique_client extends JPanel implements ActionListener {
 		final Client client;
 		final Client client2;
 		final Client client3;
+		final Client client4;
 		try {
 			// Client par defaut de l'annuaire
 			client = new Client(InetAddress.getLocalHost(), 12000);
 			client2 = new Client(InetAddress.getLocalHost(), 13000);
 			client3 = new Client(InetAddress.getLocalHost(), 14000);
+			client4 = new Client(InetAddress.getLocalHost(), 17000);
 
 			System.out.println("client : " + client);
 			System.out.println("client2 : " + client2);
@@ -119,8 +121,8 @@ public class Graphique_client extends JPanel implements ActionListener {
 	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
 	            public void run() {
 	                //createAndShowGUI(client);
-	                createAndShowGUI(client2);
-	                createAndShowGUI(client3);
+	                //createAndShowGUI(client2);
+	                //createAndShowGUI(client3);
 	            }
 	        });
 		} catch (UnknownHostException e) {
