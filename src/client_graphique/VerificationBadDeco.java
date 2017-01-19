@@ -31,8 +31,8 @@ public class VerificationBadDeco extends Thread {
 					// Ping aupres de notre successeur
 					try {
 						// Si deconnecte
-						if (! inet.isReachable(port)) {
-
+						if (! inet.isReachable(100)) {
+							
 							// On cherche le prochain successeur viable
 							// Et on remplace notre successeur par celui-ci
 							ChordPeer successeurCo = prochainSuccesseurConnecte(reference);
