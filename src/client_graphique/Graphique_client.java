@@ -97,10 +97,17 @@ public class Graphique_client extends JPanel implements ActionListener {
      * this method should be invoked from the
      * event dispatch thread.
      */
-    private static void createAndShowGUI(Client client) {
+    private static void createAndShowGUI(final Client client) {
         //Creation de la Frame
-        JFrame frame = new JFrame("Client " + client.getPort());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        final JFrame frame = new JFrame("Client " + client.getPort());
+
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                client.leaveMainChord();
+                frame.dispose();
+            }
+        });
         frame.setLayout(new BorderLayout());
         
         //Ajout des composant � la fenetre
@@ -130,13 +137,13 @@ public class Graphique_client extends JPanel implements ActionListener {
 		final Client client;
 		final Client client2;
 		final Client client3;
-		//final Client client4;
+		final Client client4;
 		try {
 			// Client par defaut de l'annuaire
 			client = new Client(InetAddress.getLocalHost(), 12000);
 			client2 = new Client(InetAddress.getLocalHost(), 13000);
 			client3 = new Client(InetAddress.getLocalHost(), 14000);
-			//client4 = new Client(InetAddress.getLocalHost(), 17000);
+			client4 = new Client(InetAddress.getLocalHost(), 17000);
 
 			//Planifier une tache pour le thread
 	        //creer et affiche le GUI
@@ -145,6 +152,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 	                createAndShowGUI(client);
 	                createAndShowGUI(client2);
 	                createAndShowGUI(client3);
+	                createAndShowGUI(client4);
 	            }
 	        });
 		} catch (UnknownHostException e) {

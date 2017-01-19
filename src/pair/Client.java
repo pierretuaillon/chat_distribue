@@ -157,9 +157,12 @@ public class Client /*implements Runnable */{
 	 * Met à jour les liens de l’anneau virtuel 
 	 * i,e notre predecesseur devra des lors pointer sur notre successeur
 	 */
-	public void leaveMainChord(ChordPeer ancienChordPeer) {
-
+	public void leaveMainChord() {
+		
 		this.chordPeer.getPredecesseur().setSuccesseur(this.chordPeer.getSuccesseur());
+		System.out.println("maj successeur");
+		// On demande a notre predecesseur (qui a maintenant notre successeur en successeur) de transmettre le message de notre depart
+		this.chordPeer.getPredecesseur().getClient().forwardMessage("--> Client " + this.port + " s'est deconnecte");
 	}
 
 	/**
