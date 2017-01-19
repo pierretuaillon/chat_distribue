@@ -243,10 +243,6 @@ public class Client /*implements Runnable */{
 				bw.write(data);
 				bw.flush();
 
-				// On stocke dans les chaines envoyees
-				byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
-				this.chordPeer.getChainesStockees().add(tradBytes);
-
 				System.out.println("Fin envoi");
 
 				this.socket.close();
@@ -257,6 +253,9 @@ public class Client /*implements Runnable */{
 				e.printStackTrace();
 			}
 		}
+		// On stocke dans les chaines envoyees
+		byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
+		this.chordPeer.getChainesStockees().add(tradBytes);
 
 
 
@@ -270,7 +269,7 @@ public class Client /*implements Runnable */{
 	@Override
 	public String toString() {
 		if (this.salon != null) {
-			return "Client [id=" + this.key + ", salon=" + this.salon.getNom() + ", adr=" + this.adr + ", port=" + this.port + "]";
+			return "Client [id=" + this.key + ", salon=" + this.salon.getNom() + ", salon-key=" + this.salon.getKey() + ", adr=" + this.adr + ", port=" + this.port + "]";
 		}
 		return "Client [id=" + this.key + ", adr=" + this.adr + ", port=" + this.port + "]";
 	}
@@ -394,7 +393,7 @@ public class Client /*implements Runnable */{
 			successeur = successeur.getSuccesseur();
 		}
 
-		return null;
+		return successeur;
 
 	}
 

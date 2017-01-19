@@ -70,10 +70,13 @@ public class ComboBoxSalon extends JPanel implements ActionListener{
         	String newSalon = listeSalon.getSelectedItem().toString();
         	SalonConversation sc = SalonConversation.joinChatRoom( SalonConversation.genererKey(newSalon));
         	if (sc == null){
+        		System.out.println("je fais un nouveau salon");
         		sc = new SalonConversation(newSalon);
         	}else{
-        		ArrayList<String> tampon = SalonConversation.readChatRoom(SalonConversation.genererKey(listeSalon.getItemAt(index).toString()));
-            	for (String string : tampon) {
+        		System.out.println("je rejoinds un salon existant : " + newSalon);
+        		ArrayList<String> tampon = SalonConversation.readChatRoom(SalonConversation.genererKey(newSalon));
+            	System.out.println("tampon :" + tampon);
+        		for (String string : tampon) {
             		this.client.getGraphique_client().ajouterMessage(string);
     			}
         	}

@@ -68,6 +68,7 @@ public class Graphique_client extends JPanel implements ActionListener {
         	return;
         }
         
+        client.getSalon().getTampon().add(text);
         client.forwardMessage(text);
         textField.setText("");
         //Make sure the new text is visible, even if there
@@ -123,7 +124,7 @@ public class Graphique_client extends JPanel implements ActionListener {
         
         frame.add(pan , BorderLayout.CENTER);
         
-      
+        
         //affiche la fenetre
         frame.pack();
         frame.setVisible(true);

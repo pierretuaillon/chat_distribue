@@ -1,6 +1,5 @@
 package node;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -10,27 +9,27 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 
 	long KeySalon;
 	String nameSalon;
-	ArrayList<String> tampon = null;
-	
-	
+	ArrayList<String> tampon = new ArrayList<String>();
+
+
 	public String getNom(){
 		return this.nameSalon;
 	}
-	
+
 	public ArrayList<String> getTampon(){
 		return this.tampon;
 	}
-	
+
 	public SalonConversation(){
 		this.nameSalon = "Default";
 		this.KeySalon = genererKey(nameSalon);
 	}
-	
+
 	public SalonConversation(String nameSalon){
 		this.nameSalon = nameSalon;
 		this.KeySalon = genererKey(nameSalon);
 	}
-	
+
 	public SalonConversation(long chatkey) {
 		// TODO Auto-generated constructor stub
 	}
@@ -38,12 +37,6 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	public static long genererKey(String nameSalon) {
 		return ((nameSalon.hashCode()) *-1);
 	}
-	
-	/**
-	 * Chaque pair appartient a un ensemble eventuellement vide de salons de conversation
-	 * Autre sens de la fleche
-	 */
-	private ArrayList<ChordPeer> pairsPossedes = new ArrayList<ChordPeer>();
 
 	/** 
 	 * Renvoie la liste des identifiants des salles de chat
@@ -52,15 +45,23 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	public static HashMap<Long, SalonConversation> getChatRoomsList()  {
 		HashMap<Long, SalonConversation> salons = new HashMap<Long, SalonConversation>();
 		ChordPeer next = Client.getAnnuaire().getChordPeer();
-
-		while  (next != Client.getAnnuaire().getChordPeer()){
+		
+		if (next.getClient().getSalon() != null) {
 			salons.putIfAbsent(next.getClient().getSalon().getKey(), next.getClient().getSalon());
 			next = next.getSuccesseur();
+
+			while  (next != Client.getAnnuaire().getChordPeer()){
+				if (next.getClient().getSalon() != null) {
+					salons.putIfAbsent(next.getClient().getSalon().getKey(), next.getClient().getSalon());
+				}
+				next = next.getSuccesseur();
+			}
 		}
+		
 		return salons;
 	}
 
-	private Long getKey() {
+	public Long getKey() {
 		return this.KeySalon;
 	}
 
@@ -69,13 +70,15 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	 * @param chatkey
 	 */
 	public static SalonConversation joinChatRoom(long chatkey) {
+		System.out.println("joinChatRoom : " + chatkey);
 		HashMap<Long, SalonConversation> salons = SalonConversation.getChatRoomsList();
-		
-			if (salons.get(chatkey) != null){
-				return salons.get(chatkey);
-			}else{
-				return null;
-			}
+		System.out.println("salons taille : " + salons.size());
+
+		if (salons.get(chatkey) != null){
+			return salons.get(chatkey);
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -85,11 +88,11 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	 */
 	public void sendToChatRoom(String s, long chatkey) {
 		HashMap<Long, SalonConversation> salons = SalonConversation.getChatRoomsList();
-			
+
 		if (salons.get(chatkey) != null) {
-				salons.get(chatkey).getTampon().add(s);
+			salons.get(chatkey).getTampon().add(s);
 		}
-		
+
 	}
 
 	/**
@@ -97,7 +100,7 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	 */
 	public static ArrayList<String> readChatRoom(long chatkey) {
 		HashMap<Long, SalonConversation> salons = SalonConversation.getChatRoomsList();
-		
+
 		if (salons.get(chatkey) != null){
 			return salons.get(chatkey).getTampon();
 		}else{
