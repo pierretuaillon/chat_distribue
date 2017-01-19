@@ -24,7 +24,7 @@ public class ComboBoxSalon extends JPanel implements ActionListener{
 		Client.getAnnuaire().getChordPeer().getClient().getSalon();
 		HashMap<Long, SalonConversation> salons = SalonConversation.getChatRoomsList();
 		this.salons = salons;
-		
+		this.client = client;
 		String [] tabNomsSalons = new String[salons.size()];
 		
 		int i =0;
@@ -35,15 +35,19 @@ public class ComboBoxSalon extends JPanel implements ActionListener{
 		}
 		
 		if (salons.isEmpty()){
-			this.client.setSalon(new SalonConversation(SalonConversation.genererKey("Default")));
+			System.out.println("Client comboxSalon "+ this.client);
+			this.client.setSalon(new SalonConversation());
 		}else{
 			this.client.setSalon(SalonConversation.joinChatRoom(SalonConversation.genererKey("Default")));
 		}
 		
 		ArrayList<String> tampon = SalonConversation.readChatRoom(SalonConversation.genererKey("Default"));
-		for (String string : tampon) {
-    		this.client.getGraphique_client().ajouterMessage(string);
+		if (tampon != null){
+			for (String string : tampon) {
+	    		this.client.getGraphique_client().ajouterMessage(string);
+			}
 		}
+		
 		this.listeSalon = new JComboBox<String>(tabNomsSalons);
 		this.listeSalon.setEditable(true);
 		this.listeSalon.addActionListener(this);
