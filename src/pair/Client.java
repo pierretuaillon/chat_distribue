@@ -18,6 +18,7 @@ import client_graphique.Graphique_client;
 import client_graphique.ServiceClient;
 import p2p.Annuaire;
 import node.ChordPeer;
+import node.SalonConversation;
 
 public class Client /*implements Runnable */{
 
@@ -29,6 +30,16 @@ public class Client /*implements Runnable */{
 	private ChordPeer chordPeer;
 	private static Annuaire annuaire;
 	Graphique_client graphique_client;
+	private SalonConversation salon;
+	
+	
+	public SalonConversation getSalon() {
+		return salon;
+	}
+
+	public void setSalon(SalonConversation salon) {
+		this.salon = salon;
+	}
 
 	public void setGraphique_client(Graphique_client graphique_client) {
 		this.graphique_client = graphique_client;
@@ -357,5 +368,4 @@ public class Client /*implements Runnable */{
 	public static void setAnnuaire(Annuaire annuaire) {
 		Client.annuaire = annuaire;
 	}
-
 }
