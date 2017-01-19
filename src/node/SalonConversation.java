@@ -84,6 +84,11 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	 * @param chatkey
 	 */
 	public void sendToChatRoom(String s, long chatkey) {
+		HashMap<Long, SalonConversation> salons = SalonConversation.getChatRoomsList();
+			
+		if (salons.get(chatkey) != null) {
+				salons.get(chatkey).getTampon().add(s);
+		}
 		
 	}
 
