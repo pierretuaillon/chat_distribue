@@ -153,7 +153,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 	                createAndShowGUI(client4);
 	                
 	                VerificationBadDeco verificationBadDeco = new VerificationBadDeco();
-	                verificationBadDeco.start();
+	                //verificationBadDeco.start();
 	            }
 	        });
 		} catch (UnknownHostException e) {
