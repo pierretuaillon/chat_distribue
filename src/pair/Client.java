@@ -202,9 +202,16 @@ public class Client /*implements Runnable */{
 		System.out.println("forwardMessage de " + data);
 
 		// Pas circuler deux fois le meme message parmi ceux deja envoyes
-		for (byte[] ancienMessageByte : this.chordPeer.getChainesStockees()) {
+		/*for (byte[] ancienMessageByte : this.chordPeer.getChainesStockees()) {
 			String ancienMessage = new String(ancienMessageByte, StandardCharsets.UTF_8);
 			if (ancienMessage.equals(data)) {
+				return;
+			}
+		}*/
+		// Pas envoyer deux fois le meme message d'affiles
+		if (! this.chordPeer.getChainesStockees().isEmpty()) {
+			String dernierMessage = new String(this.chordPeer.getChainesStockees().get(this.chordPeer.getChainesStockees().size()-1), StandardCharsets.UTF_8);
+			if (dernierMessage.equals(data)) {
 				return;
 			}
 		}
