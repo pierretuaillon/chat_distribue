@@ -1,10 +1,8 @@
 package p2p;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 
 import node.ChordPeer;
-import pair.Client;
 
 /**
  * Refere a l’adresse IP/port d’un pair toujours connecte
@@ -18,6 +16,9 @@ public class Annuaire {
 	ChordPeer chordPeer;
 	
 	long MaxKey;
+	
+	public Annuaire() {
+	}
 	
 	public boolean testMaxKey(long key){
 		if (MaxKey < key ){
@@ -39,24 +40,8 @@ public class Annuaire {
 		return this.chordPeer;
 	}
 	
-	//ArrayList<Client> listeClient = new ArrayList<Client>();
-	
 	public void setChordPeer(ChordPeer chordPeer) {
 		this.chordPeer = chordPeer;
-	}
-
-	/*
-	 * Fournir InetAddress.getLocalHost()
-	 */
-	public Annuaire() {
-	}
-
-	public InetAddress getAdresseClientDefaut() {
-		return adresseClientConnecte;
-	}
-
-	public int getPortClientDefaut() {
-		return portClientConnecte;
 	}
 
 	public InetAddress getAdresseClientConnecte() {
@@ -74,23 +59,5 @@ public class Annuaire {
 	public void setPortClientConnecte(int portClientConnecte) {
 		this.portClientConnecte = portClientConnecte;
 	}
-	
-	
-	
-	/*public ChordPeer getChordPeerHandle() {
-		if (this.listeClient.isEmpty()) {
-			return null;
-		}
-		return this.listeClient.get(0).getChordPeer();
-		
-	}*/
-	
-	/*public void ajouterClient(Client c) {
-		this.listeClient.add(c);
-	}
-	
-	public void supprimerClient(Client c) {
-		this.listeClient.remove(c);
-	}*/
 
 }

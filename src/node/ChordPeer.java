@@ -2,7 +2,6 @@ package node;
 
 import java.util.ArrayList;
 
-import p2p.Annuaire;
 import pair.Client;
 
 public class ChordPeer {

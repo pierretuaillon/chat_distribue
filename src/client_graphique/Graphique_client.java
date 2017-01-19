@@ -18,6 +18,7 @@ import pair.Client;
 
 public class Graphique_client extends JPanel implements ActionListener {
 
+	private static final long serialVersionUID = 1L;
 	JPanel panel;
     JTextField textField;
     JTextArea textArea;
@@ -62,15 +63,12 @@ public class Graphique_client extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent evt) {
         String text = textField.getText();
-        //System.out.println("je veux envoyer : " + text + " qui a une taille de " + text.length());
+        // Evite retour a la ligne
         if (text.length() == 0) {
-        	//System.out.println("Retour a la ligne, non !");
         	return;
         }
         
-        //textArea.append(text + newline);
         client.forwardMessage(text);
-        //textField.selectAll();
         textField.setText("");
         //Make sure the new text is visible, even if there
         //was a selection in the text area.
