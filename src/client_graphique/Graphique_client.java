@@ -62,9 +62,9 @@ public class Graphique_client extends JPanel implements ActionListener {
 
     public void actionPerformed(ActionEvent evt) {
         String text = textField.getText();
-        System.out.println("je veux envoyer : " + text + " qui a une taille de " + text.length());
+        //System.out.println("je veux envoyer : " + text + " qui a une taille de " + text.length());
         if (text.length() == 0) {
-        	System.out.println("Retour a la ligne, non !");
+        	//System.out.println("Retour a la ligne, non !");
         	return;
         }
         
@@ -79,7 +79,7 @@ public class Graphique_client extends JPanel implements ActionListener {
     
     public void ajouterMessage(String message) {
     	textArea.append(message + newline);
-    	System.out.println("Ajout dans textArea");
+    	//System.out.println("Ajout dans textArea");
     }
     
     

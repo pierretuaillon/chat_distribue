@@ -12,8 +12,8 @@ import pair.Client;
  */
 public class Annuaire {
 	
-	InetAddress adresseClientDefaut;
-	int portClientDefaut = 12000;
+	InetAddress adresseClientConnecte;
+	int portClientConnecte;
 	
 	ChordPeer chordPeer;
 	
@@ -48,18 +48,35 @@ public class Annuaire {
 	/*
 	 * Fournir InetAddress.getLocalHost()
 	 */
-	public Annuaire(InetAddress localHost) {
-		this.adresseClientDefaut = localHost;
+	public Annuaire() {
 	}
 
 	public InetAddress getAdresseClientDefaut() {
-		return adresseClientDefaut;
+		return adresseClientConnecte;
 	}
 
 	public int getPortClientDefaut() {
-		return portClientDefaut;
+		return portClientConnecte;
 	}
 
+	public InetAddress getAdresseClientConnecte() {
+		return adresseClientConnecte;
+	}
+
+	public void setAdresseClientConnecte(InetAddress adresseClientConnecte) {
+		this.adresseClientConnecte = adresseClientConnecte;
+	}
+
+	public int getPortClientConnecte() {
+		return portClientConnecte;
+	}
+
+	public void setPortClientConnecte(int portClientConnecte) {
+		this.portClientConnecte = portClientConnecte;
+	}
+	
+	
+	
 	/*public ChordPeer getChordPeerHandle() {
 		if (this.listeClient.isEmpty()) {
 			return null;

@@ -60,11 +60,18 @@ public class Client /*implements Runnable */{
 
 			// Je suis le premier a arriver donc le client par defaut
 			if (getAnnuaire() == null) { // Singleton plutot ?
-				setAnnuaire(new Annuaire(InetAddress.getLocalHost()));
+				setAnnuaire(new Annuaire());
+				
+				getAnnuaire().setPortClientConnecte(this.port);
+				getAnnuaire().setAdresseClientConnecte(this.adr);
+				
+				//InetAddress.getLocalHost())
 				this.chordPeer.setPredecesseur(this.chordPeer);
 				this.chordPeer.setSuccesseur(this.chordPeer);
 				getAnnuaire().setChordPeer(this.chordPeer);
 				getAnnuaire().setMaxKey(this.key);
+				
+				System.out.println("Je suis l'annuaire : client " + getPort() + " avec key " + this.key);
 			}
 			// Si je ne suis pas le client par defaut, je me connecte a celui-ci (il ne va pas se connecter a lui-meme)
 			else {
@@ -131,19 +138,19 @@ public class Client /*implements Runnable */{
 	public void joinMainChord(ChordPeer handleChordPeer) {
 
 		System.out.println();
-		System.out.println("----");
+		/*System.out.println("----");
 
 		System.out.println("joinMainChord");
-		System.out.println("successeur : " + handleChordPeer.findkey(this.getKey()));
+		System.out.println("successeur : " + handleChordPeer.findkey(this.getKey()));*/
 
 
 		ChordPeer successeur = handleChordPeer.findkey(this.getKey());
 
 		ChordPeer predecesseur = successeur.getPredecesseur();
-		System.out.println("predecesseur :" + successeur.getPredecesseur());
+		//System.out.println("predecesseur :" + successeur.getPredecesseur());
 
 		System.out.println();
-		System.out.println("----");
+		//System.out.println("----");
 
 		this.chordPeer.setSuccesseur(successeur);
 		this.chordPeer.setPredecesseur(predecesseur);
@@ -160,9 +167,43 @@ public class Client /*implements Runnable */{
 	public void leaveMainChord() {
 		
 		this.chordPeer.getPredecesseur().setSuccesseur(this.chordPeer.getSuccesseur());
+		this.chordPeer.getSuccesseur().setPredecesseur(this.chordPeer.getPredecesseur());
 		System.out.println("maj successeur");
+		
+		// Si je suis l'annuaire et que je pars
+		if (getAnnuaire().getChordPeer().getKey() == this.key) {
+			
+			// Si je suis mon propre successeur
+			if (this.chordPeer.getSuccesseur() == this.chordPeer) {
+				System.out.println("Annuaire null");
+				setAnnuaire(null);
+			}
+			else {
+				System.out.println("Nouvel annuaire : client " + this.chordPeer.getSuccesseur().getClient().getPort());
+				// le nouvel annuaire devient mon successeur
+				getAnnuaire().setChordPeer(this.chordPeer.getSuccesseur());
+				getAnnuaire().setAdresseClientConnecte(this.chordPeer.getSuccesseur().getClient().getAdr());
+				getAnnuaire().setPortClientConnecte(this.chordPeer.getSuccesseur().getClient().getPort());
+					
+			}
+		}
+		
 		// On demande a notre predecesseur (qui a maintenant notre successeur en successeur) de transmettre le message de notre depart
 		this.chordPeer.getPredecesseur().getClient().forwardMessage("--> Client " + this.port + " s'est deconnecte");
+	
+		/*// Si je suis la max key de l'annuaire, on cherche l'autre max en dessous
+				if (getAnnuaire().testMaxKey(this.key)) {
+					long maxKey = this.chordPeer.getSuccesseur().getClient().getKey();
+					
+					ChordPeer next = this.chordPeer.getSuccesseur().getSuccesseur();
+					while (next != this.chordPeer) {
+						if (maxKey < next.getKey()) {
+							maxKey = next.getKey();
+						}
+						next = next.getSuccesseur();
+					}
+					System.out.println("Nouveau max de l'annuaire : " + maxKey);
+					getAnnuaire().setMaxKey(maxKey);*/
 	}
 
 	/**
@@ -171,11 +212,6 @@ public class Client /*implements Runnable */{
 	 * @param data message a faire circuler
 	 */
 	public void forwardMessage(String data) {
-		
-		if (data == "" || data == " " || data == "\n") {
-			System.out.println("pas de char");
-			return;
-		}
 
 		System.out.println("Je suis " + toString() + " et j'envoie a " + this.chordPeer.getSuccesseur().getClient());
 		System.out.println("forwardMessage de " + data);
@@ -183,13 +219,13 @@ public class Client /*implements Runnable */{
 		// Pas circuler deux fois le meme message
 		for (byte[] ancienMessageByte : this.chordPeer.getChainesStockees()) {
 			String ancienMessage = new String(ancienMessageByte, StandardCharsets.UTF_8);
-			System.out.println("Ancien message : " + ancienMessage + " different de " + data + "?");
+			//System.out.println("Ancien message : " + ancienMessage + " different de " + data + "?");
 			if (ancienMessage.equals(data)) {
-				System.out.println("Identique !");
+				//System.out.println("Identique !");
 				return;
 			}
 			else {
-				System.out.println("Pas identique !");
+				//System.out.println("Pas identique !");
 			}
 		}
 
@@ -206,16 +242,16 @@ public class Client /*implements Runnable */{
 			OutputStream os = socket.getOutputStream();
 			OutputStreamWriter osw = new OutputStreamWriter(os);
 			BufferedWriter bw = new BufferedWriter(osw);
-			System.out.println("Avant Write data " + data);
+			//System.out.println("Avant Write data " + data);
 			bw.write(data);
 			bw.flush();
 			
 			// On stocke dans les chaines envoyees
 			byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
 			this.chordPeer.getChainesStockees().add(tradBytes);
-			System.out.println("On ajoute le byte[] de " + data);
+			//System.out.println("On ajoute le byte[] de " + data);
 			
-			System.out.println("après Write data " + data);
+			//System.out.println("après Write data " + data);
 
 			this.socket.close();
 
@@ -224,6 +260,11 @@ public class Client /*implements Runnable */{
 			this.forwardMessage(data);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+		
+		if (getAnnuaire() != null) {
+			System.out.println("L'annuaire est : client " + getAnnuaire().getPortClientConnecte());
+			System.out.println("Maxkey : " + getAnnuaire().getMaxKey());
 		}
 
 	}
@@ -274,8 +315,8 @@ public class Client /*implements Runnable */{
 
 		while(true) {
 			try {
-				System.out.println("Waiting for client on port " + 
-						serverSocket.getLocalPort() + "...");
+				//System.out.println("Waiting for client on port " + 
+				//		serverSocket.getLocalPort() + "...");
 
 				Socket socketAccept = serverSocket.accept();
 				ServiceClient serviceClient = new ServiceClient(socketAccept, this);
@@ -301,7 +342,7 @@ public class Client /*implements Runnable */{
 
 	public void Service_Client(Socket socket2) {
 
-		System.out.println("Thread gestion client lance");
+		//System.out.println("Thread gestion client lance");
 
 		//System.out.println("Just connected to " + socket2.getRemoteSocketAddress());
 		DataInputStream in;
@@ -319,7 +360,7 @@ public class Client /*implements Runnable */{
 			in.readFully(buf);
 
 
-			System.out.println("J'ai reçu : ");
+			//System.out.println("J'ai reçu : ");
 			StringBuilder sb = new StringBuilder(); // ou StringBuffer je sais plus
 
 			// for each byte in the buffer
@@ -333,14 +374,14 @@ public class Client /*implements Runnable */{
 				//System.out.println("On append : " + c);
 			}
 			
-			System.out.println("Taille sb : " + sb.length());
+			//System.out.println("Taille sb : " + sb.length());
 
 			String messageRecu = sb.toString();
-			System.out.println("Message recu : " + messageRecu);
+			//System.out.println("Message recu : " + messageRecu);
 			
 			// Evite la lecture alors que le message n'a pas fini d'etre envoye
 			if (sb.length() == 0) {
-				System.out.println("Je n'ai pas encore recu, j'attends et je reessaie");
+				//System.out.println("Je n'ai pas encore recu, j'attends et je reessaie");
 				try {
 					Thread.sleep(300);
 				} catch (InterruptedException e) {
@@ -350,7 +391,7 @@ public class Client /*implements Runnable */{
 				Service_Client(socket2);
 			}
 			else {
-				System.out.println("j'ai bien quelque chose !" + messageRecu + "<-");
+				//System.out.println("j'ai bien quelque chose !" + messageRecu + "<-");
 				
 				// Faudrait passer par JSON dans l'envoi et reception
 				// puis gererReceptionMessage()
@@ -362,7 +403,7 @@ public class Client /*implements Runnable */{
 				// Puis on transmet au sucesseur
 				this.forwardMessage(messageRecu);
 				
-				System.out.println("close socket");
+				//System.out.println("close socket");
 				socket2.close();
 			}
 
