@@ -181,7 +181,7 @@ public class Client /*implements Runnable */{
 		for (byte[] ancienMessageByte : this.chordPeer.getChainesStockees()) {
 			String ancienMessage = new String(ancienMessageByte, StandardCharsets.UTF_8);
 			System.out.println("Ancien message : " + ancienMessage + " different de " + data + "?");
-			if (ancienMessage == data) {
+			if (ancienMessage.equals(data)) {
 				System.out.println("Identique !");
 				return;
 			}
@@ -327,11 +327,28 @@ public class Client /*implements Runnable */{
 				sb.append(c);
 
 				// prints character
-				System.out.print(c);
+				//System.out.println("On append : " + c);
 			}
+			
+			System.out.println("Taille sb : " + sb.length());
 
 			String messageRecu = sb.toString();
 			System.out.println("Message recu : " + messageRecu);
+			
+			// Evite la lecture alors que le message n'a pas fini d'etre envoye
+			if (sb.length() == 0) {
+				System.out.println("Je n'ai pas encore recu, j'attends et je reessaie");
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				Service_Client(socket2);
+			}
+			else {
+				System.out.println("j'ai bien quelque chose !" + messageRecu + "<-");
+			}
 
 			// Faudrait passer par JSON dans l'envoi et reception
 			// puis gererReceptionMessage()
