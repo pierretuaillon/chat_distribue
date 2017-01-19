@@ -51,13 +51,17 @@ public class Client /*implements Runnable */{
 			this.serverSocket = new ServerSocket(port);
 
 			// Je suis le premier a arriver donc le client par defaut
-			if (annuaire == null) { // Singleton plutot ?
-				annuaire = new Annuaire(InetAddress.getLocalHost());
-				annuaire.setChordPeer(this.chordPeer);
+			if (getAnnuaire() == null) { // Singleton plutot ?
+				setAnnuaire(new Annuaire(InetAddress.getLocalHost()));
+				getAnnuaire().setChordPeer(this.chordPeer);
+				getAnnuaire().setMaxKey(this.key);
 			}
 			// Si je ne suis pas le client par defaut, je me connecte a celui-ci (il ne va pas se connecter a lui-meme)
 			else {
-				this.joinMainChord(annuaire.getChordPeer());
+				this.joinMainChord(getAnnuaire().getChordPeer());
+				if (getAnnuaire().testMaxKey(this.key)){
+					getAnnuaire().setMaxKey(this.key);
+				}
 				//InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
 				//this.socket.connect((SocketAddress) destinaireAdresseFormat, 500);
 				
@@ -336,6 +340,14 @@ public class Client /*implements Runnable */{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static Annuaire getAnnuaire() {
+		return annuaire;
+	}
+
+	public static void setAnnuaire(Annuaire annuaire) {
+		Client.annuaire = annuaire;
 	}
 
 }

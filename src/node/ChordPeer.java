@@ -2,6 +2,7 @@ package node;
 
 import java.util.ArrayList;
 
+import p2p.Annuaire;
 import pair.Client;
 
 public class ChordPeer {
@@ -53,7 +54,7 @@ public class ChordPeer {
 			if (this.predecesseur.getKey() > this.key) {
 
 				// Si on considere qu'on va jusqu'a 100 cles, a voir
-				if (this.predecesseur.getKey() <= key && key <= 100 || key >= 0 && key <= this.key) {
+				if (this.predecesseur.getKey() <= key && key <= Client.getAnnuaire().getMaxKey() || key >= 0 && key <= this.key) {
 					return this;
 				}
 			}

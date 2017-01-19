@@ -17,7 +17,24 @@ public class Annuaire {
 	
 	ChordPeer chordPeer;
 	
+	long MaxKey;
 	
+	public boolean testMaxKey(long key){
+		if (MaxKey < key ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public long getMaxKey() {
+		return MaxKey;
+	}
+
+	public void setMaxKey(long key) {
+		MaxKey = key;
+	}
+
 	public ChordPeer getChordPeer(){
 		return this.chordPeer;
 	}

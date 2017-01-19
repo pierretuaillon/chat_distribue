@@ -43,7 +43,7 @@ public class Graphique_client extends JPanel implements ActionListener {
         JScrollPane scrollPane = new JScrollPane(textArea);
 
                 
-        //Ajout des composant au panel.
+        //Ajout des composants au panel.
         GridBagConstraints c = new GridBagConstraints();
         c.gridwidth = GridBagConstraints.REMAINDER;
         c.fill = GridBagConstraints.BOTH;
