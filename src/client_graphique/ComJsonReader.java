@@ -35,5 +35,19 @@ public class ComJsonReader {
 		}
 		
 	}
+	
+	/*
+	// Exemple de cote
+    OutputStream os = socket.getOutputStream();
+    OutputStreamWriter osw = new OutputStreamWriter(os);
+    BufferedWriter bw = new BufferedWriter(osw);
+
+    JsonObjectBuilder comBuilder = Json.createObjectBuilder();
+	comBuilder.add("GET", "CONNEXION").add("KEY", key);
+	JsonObject jsonMessage = comBuilder.build();
+
+    bw.write(jsonMessage.toString());
+    bw.flush();
+	 */
 
 }

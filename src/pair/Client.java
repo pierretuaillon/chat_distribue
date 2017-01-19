@@ -17,8 +17,10 @@ import java.nio.charset.StandardCharsets;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import client_graphique.Graphique_client;
 import client_graphique.ServiceClient;
 import p2p.Annuaire;
 import node.ChordPeer;
@@ -32,6 +34,11 @@ public class Client /*implements Runnable */{
 	private ServerSocket serverSocket;
 	private ChordPeer chordPeer;
 	private static Annuaire annuaire;
+	Graphique_client graphique_client;
+
+	public void setGraphique_client(Graphique_client graphique_client) {
+		this.graphique_client = graphique_client;
+	}
 
 	/**
 	 * Un client est defini par sa key, son adress et son port	
@@ -161,6 +168,11 @@ public class Client /*implements Runnable */{
 	 * @param data message a faire circuler
 	 */
 	public void forwardMessage(String data) {
+		
+		if (data == "" || data == " " || data == "\n") {
+			System.out.println("pas de char");
+			return;
+		}
 
 		System.out.println("Je suis " + toString() + " et j'envoie a " + this.chordPeer.getSuccesseur().getClient());
 		System.out.println("forwardMessage de " + data);
@@ -168,8 +180,13 @@ public class Client /*implements Runnable */{
 		// Pas circuler deux fois le meme message
 		for (byte[] ancienMessageByte : this.chordPeer.getChainesStockees()) {
 			String ancienMessage = new String(ancienMessageByte, StandardCharsets.UTF_8);
+			System.out.println("Ancien message : " + ancienMessage + " different de " + data + "?");
 			if (ancienMessage == data) {
+				System.out.println("Identique !");
 				return;
+			}
+			else {
+				System.out.println("Pas identique !");
 			}
 		}
 
@@ -178,25 +195,8 @@ public class Client /*implements Runnable */{
 
 		}*/
 
-		InetAddress destinataireAdresse = this.chordPeer.getSuccesseur().getClient().getAdr();
-		System.out.println("destinataireAdresse : " + destinataireAdresse);
-		int destinatairePort = this.chordPeer.getSuccesseur().getClient().getPort();
-		System.out.println("destinatairePort : " + destinatairePort);
-		InetSocketAddress destinaireAdresseFormat = new InetSocketAddress(destinataireAdresse, destinatairePort);
-
-		System.out.println("destinaireAdresseFormat : " + destinaireAdresseFormat);
-
-		System.out.println("port via chorPeer "  + this.chordPeer.getClient().getPort());
 
 		try {
-			System.out.println("(SocketAddress) destinaireAdresseFormat : " + (SocketAddress) destinaireAdresseFormat);
-
-			/*if (! this.socket.isConnected() || this.socket.isClosed()) {
-				InetSocketAddress destinaireAdresseFormat2 = new InetSocketAddress(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
-				this.socket.connect((SocketAddress) destinaireAdresseFormat2, 500);
-				System.out.println("socket connect");
-			}*/
-
 			this.socket = new Socket(this.chordPeer.getSuccesseur().getClient().getAdr(), this.chordPeer.getSuccesseur().getClient().getPort());
 
 			//Send the message to the server
@@ -210,6 +210,7 @@ public class Client /*implements Runnable */{
 			// On stocke dans les chaines envoyees
 			byte[] tradBytes = data.getBytes(Charset.forName("UTF-8"));
 			this.chordPeer.getChainesStockees().add(tradBytes);
+			System.out.println("On ajoute le byte[] de " + data);
 			
 			System.out.println("après Write data " + data);
 
@@ -217,12 +218,10 @@ public class Client /*implements Runnable */{
 
 		} catch (SocketTimeoutException ste) {
 			System.out.println("Timeout depasse");
-			forwardMessage(data);
+			this.forwardMessage(data);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// forwardMessage du successeur
 
 	}
 
@@ -288,44 +287,20 @@ public class Client /*implements Runnable */{
 				break;
 			}
 		}
+	
+	}
+	
+	
 
-		/*
-		// Avant le execute, on envoie au serveur notre demande pour s'integrer a l'anneau
-        OutputStream os = socket.getOutputStream();
-        OutputStreamWriter osw = new OutputStreamWriter(os);
-        BufferedWriter bw = new BufferedWriter(osw);
-
-        JsonObjectBuilder comBuilder = Json.createObjectBuilder();
-		comBuilder.add("GET", "CONNEXION").add("KEY", key);
-		JsonObject jsonMessage = comBuilder.build();
-
-        bw.write(jsonMessage.toString());
-        bw.flush();
-		 */
-		/*
-		while (true) {
-			System.out.println("[Serveur]:  waiting for connexion");
-			this.socket = this.serverSocket.accept();
-			String c_ip = this.socket.getInetAddress().toString();
-			int c_port = this.socket.getPort();
-			System.out.format("[Serveur] : Arr. Client IP %s sur %d\n", c_ip, c_port);
-			System.out.format("[Serveur ]: Creation du thread T_%d\n", c_port);
-
-			//Reading the message from the client
-            InputStream is = this.socket.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String data = br.readLine();
-            System.out.println("Message received from client is " + data);
-		}
-		 */
+	public JPanel getGraphique_client() {
+		return graphique_client;
 	}
 
 	public void Service_Client(Socket socket2) {
 
 		System.out.println("Thread gestion client lance");
 
-		System.out.println("Just connected to " + socket2.getRemoteSocketAddress());
+		//System.out.println("Just connected to " + socket2.getRemoteSocketAddress());
 		DataInputStream in;
 		try {
 			in = new DataInputStream(socket2.getInputStream());
@@ -360,9 +335,14 @@ public class Client /*implements Runnable */{
 
 			// Faudrait passer par JSON dans l'envoi et reception
 			// puis gererReceptionMessage()
-
-
-
+			
+			if (this.graphique_client != null) {
+				this.graphique_client.ajouterMessage(messageRecu);	
+			}
+			
+			// Puis on transmet au sucesseur
+			//this.forwardMessage(messageRecu);
+			
 			System.out.println("close socket");
 			socket2.close();
 		} catch (IOException e) {

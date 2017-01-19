@@ -40,6 +40,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 
         textArea = new JTextArea(20, 70);
         textArea.setEditable(false);
+        
         JScrollPane scrollPane = new JScrollPane(textArea);
 
                 
@@ -53,6 +54,8 @@ public class Graphique_client extends JPanel implements ActionListener {
 
         c.fill = GridBagConstraints.HORIZONTAL;
         add(textField, c);
+        
+        this.client.setGraphique_client(this);
     }
     
     
@@ -67,15 +70,30 @@ public class Graphique_client extends JPanel implements ActionListener {
         //was a selection in the text area.
         textArea.setCaretPosition(textArea.getDocument().getLength());
     }
+    
+    public void ajouterMessage(String message) {
+    	textArea.append(message + newline);
+    	System.out.println("Ajout dans textArea");
+    }
+    
+    
 
-    /**
+    public JTextArea getTextArea() {
+		return textArea;
+	}
+
+	public void setTextArea(JTextArea textArea) {
+		this.textArea = textArea;
+	}
+
+	/**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
      * event dispatch thread.
      */
     private static void createAndShowGUI(Client client) {
         //Creation de la Frame
-        JFrame frame = new JFrame("Client");
+        JFrame frame = new JFrame("Client " + client.getPort());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         
@@ -106,23 +124,21 @@ public class Graphique_client extends JPanel implements ActionListener {
 		final Client client;
 		final Client client2;
 		final Client client3;
-		final Client client4;
+		//final Client client4;
 		try {
 			// Client par defaut de l'annuaire
 			client = new Client(InetAddress.getLocalHost(), 12000);
 			client2 = new Client(InetAddress.getLocalHost(), 13000);
 			client3 = new Client(InetAddress.getLocalHost(), 14000);
-			client4 = new Client(InetAddress.getLocalHost(), 17000);
+			//client4 = new Client(InetAddress.getLocalHost(), 17000);
 
-			System.out.println("client : " + client);
-			System.out.println("client2 : " + client2);
 			//Planifier une tache pour le thread
 	        //creer et affiche le GUI
 	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
 	            public void run() {
-	                //createAndShowGUI(client);
-	                //createAndShowGUI(client2);
-	                //createAndShowGUI(client3);
+	                createAndShowGUI(client);
+	                createAndShowGUI(client2);
+	                createAndShowGUI(client3);
 	            }
 	        });
 		} catch (UnknownHostException e) {
