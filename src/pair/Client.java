@@ -114,12 +114,26 @@ public class Client /*implements Runnable */{
 	/**
 	 * Permet de s'inserer par le biais d'un pair connu qui se trouve dans le reseau (handleChordPeer)
 	 * Initialisation des references distantes (predecesseur et successeur)
-	 * Si qu'un chord dans l'annuaire = renvoie toi-meme (?)
 	 */
 	public void joinMainChord(ChordPeer handleChordPeer) {
+		
+		System.out.println("joinMainChord");
+		System.out.println("successeur : " + handleChordPeer.findkey(this.getKey()) + " avec key " + this.getKey());
 
-		this.chordPeer.setSuccesseur(handleChordPeer.findkey(this.getKey()));
-		this.chordPeer.setPredecesseur(this.chordPeer);
+		ChordPeer successeur = handleChordPeer.findkey(this.getKey());
+		ChordPeer predecesseur;
+		if (successeur == this.chordPeer) {
+			predecesseur = successeur.getPredecesseur();
+		}
+		else {
+			predecesseur = this.chordPeer;
+		}
+		
+		this.chordPeer.setSuccesseur(successeur);
+		this.chordPeer.setPredecesseur(predecesseur);
+		
+		successeur.setPredecesseur(this.chordPeer);
+		predecesseur.setSuccesseur(this.chordPeer);
 
 	}
 
