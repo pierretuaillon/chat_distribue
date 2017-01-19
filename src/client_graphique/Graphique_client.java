@@ -68,7 +68,7 @@ public class Graphique_client extends JPanel implements ActionListener {
         	return;
         }
         
-        textArea.append(text + newline);
+        //textArea.append(text + newline);
         client.forwardMessage(text);
         //textField.selectAll();
         textField.setText("");

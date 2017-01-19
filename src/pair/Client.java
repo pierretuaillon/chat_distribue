@@ -348,20 +348,22 @@ public class Client /*implements Runnable */{
 			}
 			else {
 				System.out.println("j'ai bien quelque chose !" + messageRecu + "<-");
+				
+				// Faudrait passer par JSON dans l'envoi et reception
+				// puis gererReceptionMessage()
+				
+				if (this.graphique_client != null) {
+					this.graphique_client.ajouterMessage(messageRecu);	
+				}
+				
+				// Puis on transmet au sucesseur
+				this.forwardMessage(messageRecu);
+				
+				System.out.println("close socket");
+				socket2.close();
 			}
 
-			// Faudrait passer par JSON dans l'envoi et reception
-			// puis gererReceptionMessage()
-			
-			if (this.graphique_client != null) {
-				this.graphique_client.ajouterMessage(messageRecu);	
-			}
-			
-			// Puis on transmet au sucesseur
-			//this.forwardMessage(messageRecu);
-			
-			System.out.println("close socket");
-			socket2.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
