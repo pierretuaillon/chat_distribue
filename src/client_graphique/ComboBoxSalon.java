@@ -44,19 +44,16 @@ public class ComboBoxSalon extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		int index = listeSalon.getSelectedIndex();
         if(index >= 0) {
-        	for (Long Key : this.salons.keySet()) {
-				if (this.salons.get(Key).getNom() == listeSalon.getItemAt(index).toString()){
-					client.setSalon(this.salons.get(Key));
-				}
-			}
+        	SalonConversation sc = SalonConversation.joinChatRoom( SalonConversation.genererKey(listeSalon.getItemAt(index).toString()));
+        	client.setSalon(sc);
         }else if("comboBoxEdited".equals(e.getActionCommand())) {
-        	
+        	String newSalon = listeSalon.getSelectedItem().toString();
+        	SalonConversation sc = SalonConversation.joinChatRoom( SalonConversation.genererKey(newSalon));
+        	if (sc == null){
+        		sc = new SalonConversation(newSalon);
+        	}
+        	client.setSalon(sc);
         }
-		
-		/*
-        JComboBox<?> cb = (JComboBox<?>)e.getSource();
-        String SalonName = (String)cb.getSelectedItem();
-    	*/
     }
 
 	

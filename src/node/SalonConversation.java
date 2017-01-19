@@ -32,7 +32,7 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 		// TODO Auto-generated constructor stub
 	}
 
-	private long genererKey(String nameSalon) {
+	public static long genererKey(String nameSalon) {
 		return ((nameSalon.hashCode()) *-1);
 	}
 	
@@ -65,7 +65,7 @@ public class SalonConversation { // Ou GestionnaireSalons pour ces methodes, a v
 	 * Rejoint la salle si elle existe, la cree sinon
 	 * @param chatkey
 	 */
-	public SalonConversation joinChatRoom(long chatkey) {
+	public static SalonConversation joinChatRoom(long chatkey) {
 		HashMap<Long, SalonConversation> salons = SalonConversation.getChatRoomsList();
 		
 			if (salons.get(chatkey) != null){
