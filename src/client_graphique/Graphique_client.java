@@ -118,6 +118,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 
         ComboBoxSalon cbs = new ComboBoxSalon(client);
         pan.add(cbs.getListeSalon(), BorderLayout.CENTER);
+        (new VerificationListeSalons(cbs)).start();
         
         Description_Projet dp = new Description_Projet();
         pan.add(dp.getDescritpion(), BorderLayout.SOUTH);
