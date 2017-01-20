@@ -78,7 +78,6 @@ public class Graphique_client extends JPanel implements ActionListener {
     
     public void ajouterMessage(String message) {
     	textArea.append(message + newline);
-    	//System.out.println("Ajout dans textArea");
     }
     
     
@@ -118,7 +117,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 
         ComboBoxSalon cbs = new ComboBoxSalon(client);
         pan.add(cbs.getListeSalon(), BorderLayout.CENTER);
-        (new VerificationListeSalons(cbs)).start();
+        //(new VerificationListeSalons(cbs)).start();
         
         Description_Projet dp = new Description_Projet();
         pan.add(dp.getDescritpion(), BorderLayout.SOUTH);
@@ -153,7 +152,7 @@ public class Graphique_client extends JPanel implements ActionListener {
 	                createAndShowGUI(client3);
 	                createAndShowGUI(client4);
 	                
-	                VerificationBadDeco verificationBadDeco = new VerificationBadDeco();
+	                //VerificationBadDeco verificationBadDeco = new VerificationBadDeco();
 	                //verificationBadDeco.start();
 	            }
 	        });

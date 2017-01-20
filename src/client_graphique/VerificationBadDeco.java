@@ -26,7 +26,7 @@ public class VerificationBadDeco extends Thread {
 				while (successeur != reference) {
 
 					InetAddress inet = successeur.getClient().getAdr();
-					int port = successeur.getClient().getPort();
+					//int port = successeur.getClient().getPort();
 
 					// Ping aupres de notre successeur
 					try {

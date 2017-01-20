@@ -12,15 +12,13 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-import javax.swing.JPanel;
-
 import client_graphique.Graphique_client;
 import client_graphique.ServiceClient;
 import p2p.Annuaire;
 import node.ChordPeer;
 import node.SalonConversation;
 
-public class Client /*implements Runnable */{
+public class Client {
 
 	private long key;	
 	private InetAddress adr;
@@ -296,22 +294,11 @@ public class Client /*implements Runnable */{
 		return chordPeer;
 	}
 
-	/*public void gererReceptionMessage(JsonObject message) {
-
-		if (message.getString("GET") == "CONNEXION") {
-			InetAddress successeurDuNew = this.findMainChord(Long.parseLong(message.getString("KEY")));
-		}
-
-	}*/
-
 	public void execute() throws IOException {
-
-
 
 		while(true) {
 			try {
-				//System.out.println("Waiting for client on port " + 
-				//		serverSocket.getLocalPort() + "...");
+				//System.out.println("Waiting for client on port " + serverSocket.getLocalPort() + "...");
 
 				Socket socketAccept = serverSocket.accept();
 				ServiceClient serviceClient = new ServiceClient(socketAccept, this);

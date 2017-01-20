@@ -49,5 +49,14 @@ public class ComJsonReader {
     bw.write(jsonMessage.toString());
     bw.flush();
 	 */
+	
+
+	/*public void gererReceptionMessage(JsonObject message) {
+
+		if (message.getString("GET") == "CONNEXION") {
+			InetAddress successeurDuNew = this.findMainChord(Long.parseLong(message.getString("KEY")));
+		}
+
+	}*/
 
 }

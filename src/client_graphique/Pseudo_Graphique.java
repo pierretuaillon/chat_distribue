@@ -5,6 +5,7 @@ import javax.swing.JTextArea;
 
 public class Pseudo_Graphique extends JPanel{
 
+	private static final long serialVersionUID = -7600369425856759176L;
 	JTextArea textArea_Pseudo;
 	
 	public Pseudo_Graphique(String pseudo) {
