@@ -68,8 +68,8 @@ public class Graphique_client extends JPanel implements ActionListener {
         	return;
         }
         
-        client.getSalon().getTampon().add(text);
-        client.forwardMessage(text);
+        client.getSalon().getTampon().add("Client " + client.getPort() + " : " + text);
+        client.forwardMessage("Client " + client.getPort() + " : " + text);
         textField.setText("");
         //Make sure the new text is visible, even if there
         //was a selection in the text area.
