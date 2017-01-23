@@ -101,7 +101,7 @@ public class Client {
 	}
 
 	private long genererKey(InetAddress adressClient, int port) {
-		return ((adressClient.hashCode() + port) *-1);
+		return Math.abs((adressClient.hashCode() + port));
 	}
 
 	/**
